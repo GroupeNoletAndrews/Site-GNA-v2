@@ -595,7 +595,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                             transition={{ delay: 0.6, duration: 0.8 }}
                             className="text-white text-4xl font-light tracking-tight drop-shadow-lg"
                           >
-                            Bienvenue
+                            {t('common.bienvenue')}
                           </motion.h1>
                           <motion.p
                             initial={{ opacity: 0 }}
@@ -603,7 +603,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                             transition={{ delay: 1.2, duration: 0.8 }}
                             className="text-white/80 text-sm uppercase tracking-widest font-light"
                           >
-                            Une vision 360° de vos affaires
+                            {t('common.vision360')}
                           </motion.p>
                           <motion.button
                             onClick={() => onActivate(item.id)}
@@ -619,7 +619,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                           >
                             <MousePointerClick className="w-6 h-6 text-white/50" />
                             <span className="text-white/50 text-[10px] uppercase tracking-widest">
-                              Cliquez pour entrer
+                              {t('common.cliquezPourEntrer')}
                             </span>
                           </motion.button>
                         </motion.div>
@@ -641,7 +641,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                         className="flex items-center gap-2 text-white/80 hover:text-white transition-colors bg-black/20 hover:bg-black/30 px-4 py-2 rounded-full backdrop-blur-sm"
                       >
                         <span className="text-xs uppercase tracking-widest">
-                          Accueil
+                          {t('common.accueil')}
                         </span>
                         <RotateCcw className="w-4 h-4" />
                       </motion.button>
@@ -773,7 +773,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                               transition={{ delay: 0.6, duration: 0.8 }}
                               className="text-white text-3xl md:text-5xl xl:text-6xl font-light tracking-tight mb-4 drop-shadow-lg"
                             >
-                              Bienvenue
+                              {t('common.bienvenue')}
                             </motion.h1>
                             <motion.p
                               initial={{ opacity: 0 }}
@@ -781,7 +781,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                               transition={{ delay: 1.2, duration: 0.8 }}
                               className="text-white/80 text-sm md:text-lg xl:text-xl uppercase tracking-widest font-light"
                             >
-                              Une vision 360° de vos affaires
+                              {t('common.vision360')}
                             </motion.p>
                           </motion.div>
 
@@ -801,7 +801,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                           >
                             <MousePointerClick className="w-6 h-6 text-white/50" />
                             <span className="text-white/50 text-[10px] uppercase tracking-widest">
-                              Cliquez pour entrer
+                              {t('common.cliquezPourEntrer')}
                             </span>
                           </motion.div>
                         </>
@@ -843,8 +843,8 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                           opacity:
                             isIntroMode || !introAnimationFinished ? 0 : 1,
                           x: isIntroMode || !introAnimationFinished ? -20 : 0,
-                          transition: { duration: 0.4, delay: 0.2 },
                         }}
+                        transition={{ duration: 0.4, delay: 0.2 }}
                         exit={{
                           opacity: 0,
                           x: -10,
@@ -895,17 +895,17 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                   animate={{
                     opacity: isIntroExiting ? 0 : 1,
                     scale: 1,
-                    transition: {
-                      delay: isIntroMode
-                        ? isIntroExiting
-                          ? 0.2
-                          : 0
-                        : isPortrait
-                          ? 0
-                          : 0.55,
-                      duration: 0.4,
-                      ease: "easeOut",
-                    },
+                  }}
+                  transition={{
+                    delay: isIntroMode
+                      ? isIntroExiting
+                        ? 0.2
+                        : 0
+                      : isPortrait
+                        ? 0
+                        : 0.55,
+                    duration: 0.4,
+                    ease: "easeOut",
                   }}
                   exit={{
                     opacity: 0,
@@ -1013,9 +1013,11 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                     </div>
                   </div>
 
-                  <p className="mt-2 text-[10px] md:text-xs lg:text-sm xl:text-base opacity-80 line-clamp-2 leading-tight md:leading-relaxed font-light">
-                    {item.description}
-                  </p>
+                  {windowHeight >= 1000 && (
+                    <p className="mt-2 text-[10px] md:text-xs lg:text-sm xl:text-base opacity-80 line-clamp-2 leading-tight md:leading-relaxed font-light">
+                      {translatedItem.description}
+                    </p>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

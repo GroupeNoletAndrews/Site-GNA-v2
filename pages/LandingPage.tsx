@@ -274,7 +274,7 @@ const LandingPage: React.FC = () => {
                     <div className="flex flex-col items-center text-center gap-4">
                         <img src="https://plexview.ca/assets/Nolet__andrews_blanc-CHc9YYqz.png" alt="Logo" className="w-4/5 max-w-[200px] xs:max-w-[240px] sm:max-w-[300px] object-contain drop-shadow-sm opacity-95 mb-4" />
                         <div className="h-px w-20 bg-white/40 mb-2" />
-                        <p className="text-white text-sm xs:text-base sm:text-lg font-light leading-snug max-w-xs sm:max-w-md drop-shadow-md">{heroItem?.description}</p>
+                        <p className="text-white text-sm xs:text-base sm:text-lg font-light leading-snug max-w-xs sm:max-w-md drop-shadow-md line-clamp-3">{heroItem?.description}</p>
                     </div>
                     <div className="flex flex-col items-center gap-2 text-white/60 animate-bounce cursor-pointer" onClick={() => setMobileSection(1)}>
                         <span className="text-[10px] xs:text-xs uppercase tracking-widest">{t('landing.mobile.decouvrir')}</span>
@@ -429,283 +429,7 @@ const LandingPage: React.FC = () => {
                   )}
                 </AnimatePresence>
             </div>
-          </div>
-
-          <div className="h-[100dvh] w-full flex flex-col bg-slate-100 relative flex-shrink-0">
-            <div className="flex-shrink-0 relative w-full px-5 py-3 flex items-center justify-between z-50 shadow-md overflow-hidden h-16 sm:h-20 bg-slate-900/10 backdrop-blur-md">
-              <div className="absolute inset-0 z-0">
-                {heroItem?.imageUrl && (
-                  <>
-                    <motion.img
-                      src={heroItem.imageUrl}
-                      className="w-full h-full object-cover opacity-40 mix-blend-overlay"
-                      style={{ objectPosition: "22% center" }}
-                      animate={
-                        mobileSection === 1
-                          ? { scale: [1.15, 1.25, 1.15], x: [0, -12, 0] }
-                          : { scale: 1.15, x: 0 }
-                      }
-                      transition={{
-                        scale: {
-                          duration: 20,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        },
-                        x: {
-                          duration: 25,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        },
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-slate-900/60" />
-                  </>
-                )}
-              </div>
-              <div className="relative z-10 w-full flex items-center justify-between">
-                <div
-                  className="h-8 xs:h-10 sm:h-12 flex items-center justify-center cursor-pointer relative z-20"
-                  onClick={() => setMobileSection(0)}
-                >
-                  <img
-                    src="https://plexview.ca/assets/Nolet__andrews_blanc-CHc9YYqz.png"
-                    alt="Logo"
-                    className="h-full w-auto object-contain opacity-100 drop-shadow-md"
-                  />
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-                  <span className="text-xs xs:text-sm sm:text-base font-normal tracking-wide text-white uppercase drop-shadow-sm">
-                    Services offerts
-                  </span>
-                </div>
-                {/* Mobile Menu Button REMOVED */}
-              </div>
-            </div>
-
-            <div
-              ref={mobileListRef}
-              className="flex-grow overflow-y-auto no-scrollbar relative"
-              onScroll={handleListScroll}
-            >
-              <div className="flex flex-col w-full bg-slate-100 pb-40">
-                <LayoutGroup>
-                  {mobileListItems.map((item) => {
-                    const isExpanded = mobileExpandedId === item.id;
-                    const textColor = item.textClass.includes("white")
-                      ? "text-white"
-                      : "text-slate-900";
-                    return (
-                      <motion.div
-                        layout
-                        key={item.id}
-                        ref={(el) => {
-                          if (el) tileRefs.current.set(item.id, el);
-                          else tileRefs.current.delete(item.id);
-                        }}
-                        className="w-full flex flex-col relative z-0"
-                        initial={{ opacity: 1 }}
-                      >
-                        <motion.button
-                          layout="position"
-                          onClick={() => handleTileClick(item.id)}
-                          className={`w-full relative overflow-hidden text-left transition-all duration-300 ${isExpanded ? "min-h-[140px]" : "min-h-[100px] sm:min-h-[120px]"}`}
-                        >
-                          <div className={`absolute inset-0 ${item.bgClass}`} />
-                          {item.imageUrl && (
-                            <div className="absolute inset-0 opacity-20 mix-blend-overlay">
-                              <img
-                                src={item.imageUrl}
-                                className="w-full h-full object-cover grayscale"
-                              />
-                            </div>
-                          )}
-                          <div
-                            className={`absolute inset-0 border-b ${textColor === "text-white" ? "border-white/10" : "border-black/5"}`}
-                          />
-                          <div
-                            className={`relative z-10 w-full h-full p-6 sm:p-8 flex flex-row items-center justify-between ${item.textClass}`}
-                          >
-                            <div className="flex flex-col items-start gap-1 max-w-[85%]">
-                              <div className="flex items-center gap-3 mb-1">
-                                {item.icon && (
-                                  <item.icon className="w-5 h-5 sm:w-6 sm:h-6 opacity-90" />
-                                )}
-                                <h3 className="text-lg sm:text-xl font-medium leading-tight">
-                                  {item.title}
-                                </h3>
-                              </div>
-                              <p className="text-xs sm:text-sm uppercase tracking-widest opacity-70 pl-8">
-                                {item.subtitle || item.description}
-                              </p>
-                            </div>
-                            <div className="shrink-0 opacity-70">
-                              {isExpanded ? (
-                                <ChevronUp className="w-5 h-5 sm:w-6 sm:h-6" />
-                              ) : (
-                                <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6" />
-                              )}
-                            </div>
-                          </div>
-                        </motion.button>
-                        <AnimatePresence mode="sync">
-                          {isExpanded && (
-                            <motion.div
-                              layout="position"
-                              key="content"
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{
-                                duration: 0.75,
-                                ease: [0.04, 0.62, 0.23, 0.98],
-                              }}
-                              className="overflow-hidden bg-white"
-                            >
-                              <div className="w-full">
-                                <TileContent item={item} isMobile={true} />
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </motion.div>
-                    );
-                  })}
-                </LayoutGroup>
-              </div>
-            </div>
-
-            {contactItem &&
-              (() => {
-                const isContactExpanded = mobileExpandedId === "contact";
-                const isOtherTileExpanded =
-                  mobileExpandedId !== null && !isContactExpanded;
-                const shouldShrink = isOtherTileExpanded && !showMobileFooter;
-
-                return (
-                  <motion.div
-                    className="absolute z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.15)]"
-                    initial={false}
-                    animate={{
-                      width: shouldShrink ? 60 : "100%",
-                      height: shouldShrink ? 60 : "auto",
-                      bottom: shouldShrink ? 20 : showMobileFooter ? 44 : 0,
-                      right: shouldShrink ? 20 : 0,
-                      left: shouldShrink ? "auto" : 0,
-                      borderRadius: shouldShrink ? "50%" : 0,
-                    }}
-                    transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }}
-                  >
-                    <div className="w-full h-full flex flex-col relative overflow-hidden">
-                      <button
-                        onClick={() =>
-                          setMobileExpandedId(
-                            isContactExpanded ? null : "contact",
-                          )
-                        }
-                        className={`w-full h-full relative overflow-hidden text-left transition-all duration-300 ${shouldShrink ? "" : "min-h-[100px] sm:min-h-[120px]"}`}
-                      >
-                        <div
-                          className={`absolute inset-0 ${contactItem.bgClass}`}
-                        />
-                        {contactItem.imageUrl && (
-                          <div className="absolute inset-0 opacity-20 mix-blend-overlay">
-                            <img
-                              src={contactItem.imageUrl}
-                              className="w-full h-full object-cover grayscale"
-                            />
-                          </div>
-                        )}
-                        <div
-                          className={`absolute top-0 left-0 w-full h-px bg-white/20 ${shouldShrink ? "hidden" : "block"}`}
-                        />
-
-                        {/* WRAPPER FOR CONTENT */}
-                        <div
-                          className={`relative z-10 w-full h-full ${contactItem.textClass}`}
-                        >
-                          {/* 1. SHRUNK STATE ICON (Absolute Center - Always rendered but hidden if not shrunk to prevent mounting glitches) */}
-                          <motion.div
-                            className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: shouldShrink ? 1 : 0 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            {contactItem.icon && (
-                              <contactItem.icon className="w-8 h-8" />
-                            )}
-                          </motion.div>
-
-                          {/* 2. EXPANDED STATE CONTENT (Fade out when shrinking) */}
-                          <motion.div
-                            className="w-full h-full p-6 sm:p-8 flex flex-row items-center justify-between"
-                            animate={{ opacity: shouldShrink ? 0 : 1 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <div className="flex flex-col items-start gap-1 max-w-[85%]">
-                              <div className="flex items-center gap-3 mb-1">
-                                {contactItem.icon && (
-                                  <contactItem.icon className="w-5 h-5 sm:w-6 sm:h-6 opacity-90" />
-                                )}
-                                <h3 className="text-lg sm:text-xl font-medium leading-tight">
-                                  {contactItem.title}
-                                </h3>
-                              </div>
-                              <p className="text-xs sm:text-sm uppercase tracking-widest opacity-70 pl-8">
-                                {contactItem.subtitle ||
-                                  contactItem.description}
-                              </p>
-                            </div>
-                            <div className="shrink-0 opacity-70">
-                              {isContactExpanded ? (
-                                <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 rotate-180 transition-transform" />
-                              ) : (
-                                <ChevronUp className="w-5 h-5 sm:w-6 sm:h-6 transition-transform" />
-                              )}
-                            </div>
-                          </motion.div>
-                        </div>
-                      </button>
-
-                      <AnimatePresence initial={false}>
-                        {isContactExpanded && !shouldShrink && (
-                          <motion.div
-                            key="contact-content"
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "60vh", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{
-                              duration: 0.75,
-                              ease: [0.04, 0.62, 0.23, 0.98],
-                            }}
-                            className="overflow-y-auto bg-white border-t border-slate-200 order-last"
-                          >
-                            <div className="w-full">
-                              <TileContent item={contactItem} isMobile={true} />
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </motion.div>
-                );
-              })()}
-            <AnimatePresence>
-              {showMobileFooter && (
-                <motion.div
-                  initial={{ y: "100%" }}
-                  animate={{ y: "0%" }}
-                  exit={{ y: "100%" }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute bottom-0 left-0 w-full h-11 z-50 bg-white/95 backdrop-blur-sm border-t border-slate-100 flex items-center justify-center shadow-[0_-4px_10px_rgba(0,0,0,0.05)]"
-                >
-                  <p className="text-[10px] sm:text-xs text-slate-500 font-medium uppercase tracking-widest">
-                    © 2026 Groupe Nolet & Andrews
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </motion.div>
+          </motion.div>
 
         {/* Mobile Menu Overlay REMOVED */}
       </div>
@@ -836,11 +560,10 @@ const LandingPage: React.FC = () => {
                     transition={{ delay: 0.5, duration: 0.8 }}
                   >
                     <h2 className="text-3xl md:text-5xl font-light text-slate-800 leading-tight">
-                      C'est parti !
+                      {t('common.cestParti')}
                     </h2>
                     <p className="mt-6 text-lg md:text-2xl text-slate-600 font-light leading-relaxed">
-                      Naviguez les tuiles pour découvrir nos services <br /> et
-                      en apprendre plus sur nous.
+                      {t('common.naviguezTuiles')} <br /> {t('common.enApprendrePlus')}
                     </p>
                   </motion.div>
                 )}
@@ -914,23 +637,12 @@ const LandingPage: React.FC = () => {
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ delay: 0.5, duration: 0.8 }}
                     >
-                        {/* Only show "C'est parti" Text during the ENTRY sequence, not the RETURN sequence */}
-                        {(introStage === 'overlay-in' || introStage === 'reveal') && (
-                            <motion.div 
-                            className="max-w-4xl px-8 text-center"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ delay: 0.5, duration: 0.8 }}
-                            >
-                                <h2 className="text-3xl md:text-5xl font-light text-slate-800 leading-tight">
-                                    {t('common.cestParti')}
-                                </h2>
-                                <p className="mt-6 text-lg md:text-2xl text-slate-600 font-light leading-relaxed">
-                                    {t('common.naviguezTuiles')} <br/> {t('common.enApprendrePlus')}
-                                </p>
-                            </motion.div>
-                        )}
+                      <h2 className="text-3xl md:text-5xl font-light text-slate-800 leading-tight">
+                        {t('common.cestParti')}
+                      </h2>
+                      <p className="mt-6 text-lg md:text-2xl text-slate-600 font-light leading-relaxed">
+                        {t('common.naviguezTuiles')} <br /> {t('common.enApprendrePlus')}
+                      </p>
                     </motion.div>
                   )}
                 </motion.div>
@@ -958,8 +670,7 @@ const LandingPage: React.FC = () => {
 
       {/* Language Switcher - Flottant pour tous les layouts */}
       <LanguageSwitcher />
-
-    </div>
+    </motion.div>
   );
 };
 
