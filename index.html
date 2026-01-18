@@ -40,6 +40,18 @@
         background-color: #e2e8f0;
         overflow-x: hidden;
       }
+      #root {
+        height: 100%;
+        width: 100%;
+        background-color: #e2e8f0;
+        opacity: 0;
+        animation: fadeInRoot 0.3s ease-out 0.1s forwards;
+      }
+      @keyframes fadeInRoot {
+        to {
+          opacity: 1;
+        }
+      }
       /* Hide scrollbar for cleaner UI in grid containers */
       .no-scrollbar::-webkit-scrollbar {
         display: none;

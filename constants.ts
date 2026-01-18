@@ -52,7 +52,7 @@ export const GRID_ITEMS: GridItem[] = [
     description: 'Une vision 360° de vos affaires. Technologies, gestion, finances.',
     colSpan: 2, 
     rowSpan: 6, // Full Height (Rows 1-6)
-    bgClass: 'bg-[#0D4715]', // Forest Green
+    bgClass: 'white',
     textClass: 'text-white',
     type: 'logo',
     icon: Building2,
