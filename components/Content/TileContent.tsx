@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GridItem } from '../../types';
+import { useI18n } from '../../contexts/I18nContext';
 import { ChevronDown, ArrowRight, Mail, Phone, Send, MessageSquare } from 'lucide-react';
 
 interface TileContentProps {
@@ -26,6 +27,7 @@ interface ScrollableContainerProps {
 }
 
 const ScrollableContainer: React.FC<ScrollableContainerProps> = ({ sections, themeColor }) => {
+  const { t } = useI18n();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
   const touchStartY = useRef<number>(0);
@@ -113,10 +115,10 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({ sections, the
             key={idx}
             onClick={() => setCurrentIndex(idx)}
             className="group relative flex items-center justify-center w-6 h-6"
-            aria-label={`Aller à la section ${idx + 1}`}
+            aria-label={`${t('common.alleraSection')} ${idx + 1}`}
           >
             <div className={`absolute right-full mr-2 px-2 py-1 backdrop-blur-md rounded text-[10px] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none font-light shadow-sm ${themeColor === 'white' ? 'bg-white/20 text-white' : 'bg-black/10 text-slate-900'}`}>
-               Section {idx + 1}
+               {t('common.section')} {idx + 1}
             </div>
             <div className={`w-2 h-2 rounded-full transition-all duration-300 ${idx === currentIndex ? 'scale-0 opacity-0' : 'bg-current opacity-30 hover:opacity-80 hover:scale-125'}`} />
             {idx === currentIndex && (
@@ -140,7 +142,7 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({ sections, the
                 exit={{ opacity: 0 }}
                 className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60 pointer-events-none"
             >
-                <span className="text-xs uppercase tracking-widest font-normal">Scrollez</span>
+                <span className="text-xs uppercase tracking-widest font-normal">{t('common.scroll')}</span>
                 <motion.div
                     animate={{ y: [0, 5, 0] }}
                     transition={{ repeat: Infinity, duration: 1.5 }}
@@ -157,43 +159,44 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({ sections, the
 
 // --- CONTENU SPÉCIFIQUE (DÉCOUPÉ EN SECTIONS & ADAPTATIF) ---
 
-const DevSolutionsSections = (s: StyleConfig) => [
+const DevSolutionsSections = (s: StyleConfig, t: (key: string) => any) => [
   // SECTION 1: INTRO
   <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>Solutions Numériques</h3>
+    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('dev-solutions.intro.heading')}</h3>
     <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-      Chaque entreprise est unique, et ses besoins technologiques le sont tout autant. Nous concevons des solutions numériques personnalisées qui s’intègrent parfaitement à votre réalité et soutiennent vos objectifs d’affaires.
+      {t('dev-solutions.intro.description')}
     </p>
     <div className="mt-8 md:mt-12 flex gap-4">
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Sur Mesure</div>
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Stratégique</div>
+        {(t('dev-solutions.intro.tags') as string[] || []).map((tag, i) => (
+          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+        ))}
     </div>
   </div>,
 
   // SECTION 2: POINTS CLÉS
   <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>Une Approche Adaptée</h3>
+    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('dev-solutions.section2.heading')}</h3>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 xl:gap-12">
        <div className="space-y-6 xl:space-y-10">
           <div className="flex items-start gap-4 xl:gap-6">
               <div className={`w-10 h-10 md:w-12 md:h-12 xl:w-16 xl:h-16 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} text-base xl:text-xl`}>01</div>
               <div>
-                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>Outils de gestion adaptés</h4>
-                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>Nous développons des applications internes ou des plateformes spécialisées qui répondent à vos processus spécifiques et améliorent votre efficacité.</p>
+                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>{t('dev-solutions.section2.point1.title')}</h4>
+                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>{t('dev-solutions.section2.point1.description')}</p>
               </div>
           </div>
           <div className="flex items-start gap-4 xl:gap-6">
               <div className={`w-10 h-10 md:w-12 md:h-12 xl:w-16 xl:h-16 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} text-base xl:text-xl`}>02</div>
               <div>
-                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>Solutions évolutives</h4>
-                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>Nos développements sont pensés pour s’adapter à la croissance de votre entreprise et aux nouvelles exigences de votre marché.</p>
+                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>{t('dev-solutions.section2.point2.title')}</h4>
+                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>{t('dev-solutions.section2.point2.description')}</p>
               </div>
           </div>
        </div>
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col justify-center`}>
-          <h4 className={`font-normal mb-4 text-base md:text-lg xl:text-2xl ${s.text}`}>Intégration fluide</h4>
+          <h4 className={`font-normal mb-4 text-base md:text-lg xl:text-2xl ${s.text}`}>{t('dev-solutions.section2.card.title')}</h4>
           <p className={`font-light text-sm md:text-base xl:text-lg leading-relaxed ${s.subtext}`}>
-              Nous veillons à ce que chaque solution déployée s’harmonise avec vos systèmes existants, garantissant une transition simple et une adoption rapide par vos équipes.
+              {t('dev-solutions.section2.card.description')}
           </p>
        </div>
     </div>
@@ -201,55 +204,56 @@ const DevSolutionsSections = (s: StyleConfig) => [
 
   // SECTION 3: CONCLUSION
   <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>Impact Durable</h3>
+      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('dev-solutions.section3.heading')}</h3>
       <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
          <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
          <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
-           Développer des solutions digitales sur mesure, c’est transformer vos défis opérationnels en opportunités d’innovation et de performance durable.
+           {t('dev-solutions.section3.quote')}
          </p>
       </div>
   </div>
 ];
 
-const OptimisationSections = (s: StyleConfig) => [
+const OptimisationSections = (s: StyleConfig, t: (key: string) => any) => [
   // SECTION 1: INTRO
   <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>Performance & Modernité</h3>
+    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('optimisation.intro.heading')}</h3>
     <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-      L’optimisation et la modernisation de votre présence web sont des piliers essentiels pour assurer la performance, la crédibilité et la compétitivité de votre entreprise en ligne. Notre approche combine analyse technique, design, expérience utilisateur (UX) et référencement naturel (SEO) afin de maximiser vos résultats numériques.
+      {t('optimisation.intro.description')}
     </p>
     <div className="mt-8 md:mt-12 flex gap-4">
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>UX/UI Design</div>
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>SEO Technique</div>
+        {(t('optimisation.intro.tags') as string[] || []).map((tag, i) => (
+          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+        ))}
     </div>
   </div>,
 
   // SECTION 2: POINTS CLÉS
   <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-7xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>Notre Approche</h3>
+    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('optimisation.section2.heading')}</h3>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 xl:gap-8">
        {/* Point 1 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>01</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>Design & Performance</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('optimisation.section2.point1.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            Un site au visuel soigné et contemporain reflète l’image de votre entreprise. Nous repensons l’interface pour qu’elle soit attrayante et alignée avec votre identité, tout en garantissant une vitesse de chargement optimale.
+            {t('optimisation.section2.point1.description')}
           </p>
        </div>
        {/* Point 2 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>02</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>UX & Mobile</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('optimisation.section2.point2.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            Nous repensons la navigation pour une expérience simple et intuitive. Votre site sera parfaitement responsive et accessible sur tous les appareils, du téléphone à l'ordinateur.
+            {t('optimisation.section2.point2.description')}
           </p>
        </div>
        {/* Point 3 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>03</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>SEO & Sécurité</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('optimisation.section2.point3.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            Optimisation du code et du contenu pour les moteurs de recherche. Mise à jour de l’infrastructure et des protocoles de sécurité pour une fiabilité totale.
+            {t('optimisation.section2.point3.description')}
           </p>
        </div>
     </div>
@@ -257,55 +261,56 @@ const OptimisationSections = (s: StyleConfig) => [
 
   // SECTION 3: CONCLUSION
   <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>Performance & Conversion</h3>
+      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('optimisation.section3.heading')}</h3>
       <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
          <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
          <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
-           Transformer votre site en un outil de performance moderne qui attire, engage et convertit : voilà notre objectif.
+           {t('optimisation.section3.quote')}
          </p>
       </div>
   </div>
 ];
 
-const AutomatisationSections = (s: StyleConfig) => [
+const AutomatisationSections = (s: StyleConfig, t: (key: string) => any) => [
   // SECTION 1: INTRO
   <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>Efficacité Opérationnelle</h3>
+    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('automatisation.intro.heading')}</h3>
     <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-      L’automatisation est un levier puissant pour accroître l’efficacité et libérer du temps précieux au sein des entreprises. Nous vous accompagnons dans l’intégration de solutions numériques qui simplifient vos processus, réduisent les erreurs et augmentent la productivité de vos équipes.
+      {t('automatisation.intro.description')}
     </p>
     <div className="mt-8 md:mt-12 flex gap-4">
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Productivité</div>
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Intelligence</div>
+        {(t('automatisation.intro.tags') as string[] || []).map((tag, i) => (
+          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+        ))}
     </div>
   </div>,
 
   // SECTION 2: POINTS CLÉS
   <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-7xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>Nos Interventions</h3>
+    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('automatisation.section2.heading')}</h3>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 xl:gap-8">
        {/* Point 1 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>01</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>Processus répétitifs</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('automatisation.section2.point1.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            Nous identifions les tâches à faible valeur ajoutée et mettons en place des solutions pour les exécuter automatiquement.
+            {t('automatisation.section2.point1.description')}
           </p>
        </div>
        {/* Point 2 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>02</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>Outils collaboratifs</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('automatisation.section2.point2.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            Nous déployons des plateformes modernes (CRM, outils de gestion, solutions collaboratives) pour centraliser l’information et améliorer la communication interne.
+            {t('automatisation.section2.point2.description')}
           </p>
        </div>
        {/* Point 3 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>03</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>Flux de travail</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('automatisation.section2.point3.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            Nous analysons vos méthodes actuelles afin de concevoir des workflows plus fluides, plus rapides et mieux adaptés à vos objectifs d’affaires.
+            {t('automatisation.section2.point3.description')}
           </p>
        </div>
     </div>
@@ -313,55 +318,56 @@ const AutomatisationSections = (s: StyleConfig) => [
 
   // SECTION 3: CONCLUSION
   <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>Libérez votre potentiel</h3>
+      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('automatisation.section3.heading')}</h3>
       <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
          <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
          <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
-           Automatiser et optimiser vos processus, c’est donner à vos équipes plus de temps pour se concentrer sur ce qui compte vraiment : l’innovation, la croissance et la satisfaction de vos clients.
+           {t('automatisation.section3.quote')}
          </p>
       </div>
   </div>
 ];
 
-const ConseilSections = (s: StyleConfig) => [
+const ConseilSections = (s: StyleConfig, t: (key: string) => any) => [
   // SECTION 1: INTRO
   <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>Vision Stratégique</h3>
+    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('conseil.intro.heading')}</h3>
     <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-      Les conseils d’affaires et la consultation stratégique sont au cœur de la croissance durable d’une entreprise. Notre rôle est de vous accompagner dans vos décisions clés en vous offrant une vision claire, des outils concrets et un plan d’action aligné sur vos objectifs.
+      {t('conseil.intro.description')}
     </p>
     <div className="mt-8 md:mt-12 flex gap-4">
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Croissance</div>
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Rentabilité</div>
+        {(t('conseil.intro.tags') as string[] || []).map((tag, i) => (
+          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+        ))}
     </div>
   </div>,
 
   // SECTION 2: POINTS CLÉS
   <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-7xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>Axes Stratégiques</h3>
+    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('conseil.section2.heading')}</h3>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 xl:gap-8">
        {/* Point 1 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>01</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>Analyse & Diagnostic</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('conseil.section2.point1.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            Nous étudions votre environnement d’affaires, vos concurrents et vos opportunités afin de définir les leviers de croissance les plus pertinents.
+            {t('conseil.section2.point1.description')}
           </p>
        </div>
        {/* Point 2 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>02</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>Planification</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('conseil.section2.point2.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            Nous vous aidons à bâtir une feuille de route claire, avec des étapes mesurables, afin que vos initiatives numériques et organisationnelles soutiennent vos objectifs d’affaires.
+            {t('conseil.section2.point2.description')}
           </p>
        </div>
        {/* Point 3 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>03</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>Optimisation</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('conseil.section2.point3.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            En repensant vos méthodes de travail et vos outils, nous améliorons l’efficacité et la rentabilité de votre entreprise tout en réduisant les frictions opérationnelles.
+            {t('conseil.section2.point3.description')}
           </p>
        </div>
     </div>
@@ -369,55 +375,56 @@ const ConseilSections = (s: StyleConfig) => [
 
   // SECTION 3: CONCLUSION
   <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>Partenariat Durable</h3>
+      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('conseil.section3.heading')}</h3>
       <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
          <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
          <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
-           La consultation n’est pas seulement un accompagnement : c’est un partenariat qui vous permet de prendre de meilleures décisions et de transformer vos ambitions en résultats tangibles.
+           {t('conseil.section3.quote')}
          </p>
       </div>
   </div>
 ];
 
-const DataAnalysisSections = (s: StyleConfig) => [
+const DataAnalysisSections = (s: StyleConfig, t: (key: string) => any) => [
   // SECTION 1: INTRO
   <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>Clarté Décisionnelle</h3>
+    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('data-analysis.intro.heading')}</h3>
     <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-      L’analyse de données et l’intelligence d’affaires permettent aux entreprises de transformer l’information brute en leviers stratégiques. Notre objectif est de vous aider à mieux comprendre vos activités et à orienter vos décisions grâce à des solutions claires, visuelles et adaptées à votre réalité.
+      {t('data-analysis.intro.description')}
     </p>
     <div className="mt-8 md:mt-12 flex gap-4">
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Intelligence</div>
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Visualisation</div>
+        {(t('data-analysis.intro.tags') as string[] || []).map((tag, i) => (
+          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+        ))}
     </div>
   </div>,
 
   // SECTION 2: POINTS CLÉS
   <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-7xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>Notre Expertise</h3>
+    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('data-analysis.section2.heading')}</h3>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 xl:gap-8">
        {/* Point 1 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>01</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>Évaluation des données</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('data-analysis.section2.point1.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            Nous étudions, structurons et organisons vos données afin de révéler des tendances et des indicateurs pertinents pour votre entreprise.
+            {t('data-analysis.section2.point1.description')}
           </p>
        </div>
        {/* Point 2 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>02</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>Tableaux de bord</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('data-analysis.section2.point2.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            Nous développons des outils visuels et dynamiques qui permettent de suivre vos performances en temps réel et de simplifier la lecture de l’information clé.
+            {t('data-analysis.section2.point2.description')}
           </p>
        </div>
        {/* Point 3 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>03</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>Sur mesure</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('data-analysis.section2.point3.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            Nous concevons des solutions adaptées à vos besoins afin que chaque décision s’appuie sur des données fiables et exploitables.
+            {t('data-analysis.section2.point3.description')}
           </p>
        </div>
     </div>
@@ -425,55 +432,56 @@ const DataAnalysisSections = (s: StyleConfig) => [
 
   // SECTION 3: CONCLUSION
   <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>Insights Stratégiques</h3>
+      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('data-analysis.section3.heading')}</h3>
       <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
          <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
          <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
-           Avec l’analyse de données et l’intelligence d’affaires, vos choix ne reposent plus sur l’intuition seule : ils sont guidés par des faits mesurables et des insights stratégiques.
+           {t('data-analysis.section3.quote')}
          </p>
       </div>
   </div>
 ];
 
-const FormationSections = (s: StyleConfig) => [
+const FormationSections = (s: StyleConfig, t: (key: string) => any) => [
   // SECTION 1: INTRO
   <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>Capital Humain</h3>
+    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('formation.intro.heading')}</h3>
     <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-      La réussite d’une entreprise repose autant sur les technologies que sur la force de ses équipes. Chez Groupe Nolet & Andrews, nous offrons des programmes de formation et un accompagnement adaptés qui renforcent les compétences de vos employés et dirigeants. Qu’il s’agisse de gestion, d’opérations ou d’outils numériques, nous sommes là pour vous guider.
+      {t('formation.intro.description')}
     </p>
     <div className="mt-8 md:mt-12 flex gap-4">
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Compétences</div>
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Autonomie</div>
+        {(t('formation.intro.tags') as string[] || []).map((tag, i) => (
+          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+        ))}
     </div>
   </div>,
 
   // SECTION 2: POINTS CLÉS
   <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-7xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>Notre Pédagogie</h3>
+    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('formation.section2.heading')}</h3>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 xl:gap-8">
        {/* Point 1 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>01</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>Formations spécialisées</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('formation.section2.point1.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            Des contenus adaptés à votre secteur et à vos besoins réels, pour maximiser l’impact et la rétention des apprentissages.
+            {t('formation.section2.point1.description')}
           </p>
        </div>
        {/* Point 2 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>02</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>Ateliers pratiques</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('formation.section2.point2.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            Nous privilégions des sessions interactives qui privilégient l’action et permettent aux participants d’appliquer immédiatement leurs nouvelles connaissances.
+            {t('formation.section2.point2.description')}
           </p>
        </div>
        {/* Point 3 */}
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>03</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>Accompagnement continu</h4>
+          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('formation.section2.point3.title')}</h4>
           <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            Nous restons disponibles pour donner un soutien durable, au-delà des formations, pour assurer l’autonomie, la confiance et la performance de vos équipes.
+            {t('formation.section2.point3.description')}
           </p>
        </div>
     </div>
@@ -481,54 +489,54 @@ const FormationSections = (s: StyleConfig) => [
 
   // SECTION 3: CONCLUSION
   <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>Savoir & Performance</h3>
+      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('formation.section3.heading')}</h3>
       <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
          <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
          <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
-           Former et accompagner vos équipes, c’est leur donner les outils humains et numériques pour s’adapter, évoluer et transformer la technologie en véritable moteur de performance.
+           {t('formation.section3.quote')}
          </p>
       </div>
   </div>
 ];
 
-const MaintenanceSections = (s: StyleConfig) => [
+const MaintenanceSections = (s: StyleConfig, t: (key: string) => any) => [
   // SECTION 1: INTRO
   <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>Maintenance Logicielle</h3>
+    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('maintenance.intro.heading')}</h3>
     <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-      Les systèmes numériques évoluent, et leur stabilité est aussi stratégique que leur conception.
-      Nous offrons des services de maintenance logicielle flexibles et rigoureux, autant pour nos propres solutions que pour des logiciels existants, afin d’assurer performance, sécurité et continuité opérationnelle.
+      {t('maintenance.intro.description')}
     </p>
     <div className="mt-8 md:mt-12 flex gap-4">
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Court Terme</div>
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Long Terme</div>
+        {(t('maintenance.intro.tags') as string[] || []).map((tag, i) => (
+          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+        ))}
     </div>
   </div>,
 
   // SECTION 2: POINTS CLÉS
   <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>Une Approche Structurée</h3>
+    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('maintenance.section2.heading')}</h3>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 xl:gap-12">
        <div className="space-y-6 xl:space-y-10">
           <div className="flex items-start gap-4 xl:gap-6">
               <div className={`w-10 h-10 md:w-12 md:h-12 xl:w-16 xl:h-16 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} text-base xl:text-xl`}>01</div>
               <div>
-                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>Maintenance proactive</h4>
-                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>Nous assurons la surveillance, les mises à jour et les ajustements nécessaires pour prévenir les problèmes avant qu’ils n’impactent vos opérations.</p>
+                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>{t('maintenance.section2.point1.title')}</h4>
+                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>{t('maintenance.section2.point1.description')}</p>
               </div>
           </div>
           <div className="flex items-start gap-4 xl:gap-6">
               <div className={`w-10 h-10 md:w-12 md:h-12 xl:w-16 xl:h-16 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} text-base xl:text-xl`}>02</div>
               <div>
-                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>Adaptation continue</h4>
-                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>Vos outils évoluent avec votre entreprise. Nous optimisons et ajustons les fonctionnalités selon vos nouveaux besoins et vos réalités terrain.</p>
+                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>{t('maintenance.section2.point2.title')}</h4>
+                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>{t('maintenance.section2.point2.description')}</p>
               </div>
           </div>
        </div>
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col justify-center`}>
-          <h4 className={`font-normal mb-4 text-base md:text-lg xl:text-2xl ${s.text}`}>Support technique fiable</h4>
+          <h4 className={`font-normal mb-4 text-base md:text-lg xl:text-2xl ${s.text}`}>{t('maintenance.section2.card.title')}</h4>
           <p className={`font-light text-sm md:text-base xl:text-lg leading-relaxed ${s.subtext}`}>
-              Nos équipes interviennent rapidement pour corriger, stabiliser ou améliorer vos logiciels, qu’ils aient été développés par GNA ou par des tiers.
+              {t('maintenance.section2.card.description')}
           </p>
        </div>
     </div>
@@ -536,53 +544,54 @@ const MaintenanceSections = (s: StyleConfig) => [
 
   // SECTION 3: CONCLUSION
   <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>Impact Durable</h3>
+      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('maintenance.section3.heading')}</h3>
       <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
          <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
          <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
-           Assurer la maintenance de vos logiciels, c’est protéger vos opérations, prolonger la durée de vie de vos outils et garantir une performance constante dans le temps.
+           {t('maintenance.section3.quote')}
          </p>
       </div>
   </div>
 ];
 
-const FinanceSections = (s: StyleConfig) => [
+const FinanceSections = (s: StyleConfig, t: (key: string) => any) => [
   // SECTION 1: INTRO
   <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>Support Financier & Subventions</h3>
+    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('finance.intro.heading')}</h3>
     <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-      Bien que Groupe Nolet & Andrews n’offre pas de financement direct, nous accompagnons les entreprises dans l’analyse financière complète de leurs projets afin d’identifier les programmes de financement et de subventions disponibles au Québec et au Canada.
+      {t('finance.intro.description')}
     </p>
     <div className="mt-8 md:mt-12 flex gap-4">
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Analyse</div>
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Accompagnement</div>
+        {(t('finance.intro.tags') as string[] || []).map((tag, i) => (
+          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+        ))}
     </div>
   </div>,
 
   // SECTION 2: POINTS CLÉS
   <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>Une Approche Éclairée</h3>
+    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('finance.section2.heading')}</h3>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 xl:gap-12">
        <div className="space-y-6 xl:space-y-10">
           <div className="flex items-start gap-4 xl:gap-6">
               <div className={`w-10 h-10 md:w-12 md:h-12 xl:w-16 xl:h-16 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} text-base xl:text-xl`}>01</div>
               <div>
-                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>Analyse de projet</h4>
-                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>Nous évaluons la structure de votre entreprise, la viabilité de votre projet et son alignement avec les critères des programmes existants.</p>
+                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>{t('finance.section2.point1.title')}</h4>
+                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>{t('finance.section2.point1.description')}</p>
               </div>
           </div>
           <div className="flex items-start gap-4 xl:gap-6">
               <div className={`w-10 h-10 md:w-12 md:h-12 xl:w-16 xl:h-16 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} text-base xl:text-xl`}>02</div>
               <div>
-                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>Éligibilité & stratégie</h4>
-                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>Nous identifions les subventions, crédits ou programmes pertinents et bâtissons une stratégie réaliste pour maximiser vos chances d’acceptation.</p>
+                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>{t('finance.section2.point2.title')}</h4>
+                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>{t('finance.section2.point2.description')}</p>
               </div>
           </div>
        </div>
        <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col justify-center`}>
-          <h4 className={`font-normal mb-4 text-base md:text-lg xl:text-2xl ${s.text}`}>Gestion des démarches</h4>
+          <h4 className={`font-normal mb-4 text-base md:text-lg xl:text-2xl ${s.text}`}>{t('finance.section2.card.title')}</h4>
           <p className={`font-light text-sm md:text-base xl:text-lg leading-relaxed ${s.subtext}`}>
-              Nous pouvons prendre en charge la préparation, la complétion et la transmission des demandes et formulaires requis, afin de vous faire gagner du temps et réduire les risques d’erreurs.
+              {t('finance.section2.card.description')}
           </p>
        </div>
     </div>
@@ -590,46 +599,40 @@ const FinanceSections = (s: StyleConfig) => [
 
   // SECTION 3: CONCLUSION
   <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>Impact Durable</h3>
+      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('finance.section3.heading')}</h3>
       <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
          <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
          <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
-           Un bon accompagnement financier, c’est transformer un projet solide en opportunité concrète, tout en naviguant efficacement dans les programmes disponibles.
+           {t('finance.section3.quote')}
          </p>
       </div>
   </div>
 ];
 
-const WhyUsSections = (s: StyleConfig) => [
+const WhyUsSections = (s: StyleConfig, t: (key: string) => any) => [
   // SECTION 1: INTRO
   <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>Partenaire de Confiance</h3>
+    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('why-us.intro.heading')}</h3>
     <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-      Et si vos opérations étaient aussi agiles que votre vision d'affaires ?
+      {t('why-us.intro.question')}
       <br/><br/>
-      Avec plus de 30 ans d’expérience en stratégie numérique, gestion et technologies, nous offrons une vision intégrée qui couvre l’ensemble du spectre des entreprises : optimisation, transformation et consultance stratégique.
+      {t('why-us.intro.description')}
     </p>
     <div className="mt-8 md:mt-12 flex gap-4">
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Expertise 30+ ans</div>
-        <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Vision 360°</div>
+        {(t('why-us.intro.tags') as string[] || []).map((tag, i) => (
+          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+        ))}
     </div>
   </div>,
 
   // SECTION 2: POINTS CLÉS
   <div className="h-full flex flex-col justify-center max-w-6xl 2xl:max-w-7xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>Nos Engagements</h3>
+    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('why-us.section2.heading')}</h3>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 xl:gap-8">
-       {[
-           { t: "Approche sur mesure", d: "Chaque solution est adaptée à vos objectifs, vos ressources et votre réalité d’affaires." },
-           { t: "Résultats concrets", d: "Nos recommandations sont toujours orientées vers des gains mesurables et durables." },
-           { t: "Innovation continue", d: "Nous intégrons les meilleures pratiques et technologies pour garder vos solutions à jour." },
-           { t: "Accompagnement humain", d: "Un partenariat basé sur la transparence, la confiance et une communication claire." },
-           { t: "Sécurité et conformité", d: "Vos données et vos outils sont protégés selon les normes les plus strictes (Loi 25, RGPD)." },
-           { t: "Soutien durable", d: "Nous restons présents après la mise en place pour assurer suivi, évolution et pérennité." }
-       ].map((p, i) => (
+       {((t('why-us.section2.points') as any[]) || []).map((p, i) => (
            <div key={i} className={`p-5 xl:p-6 rounded-2xl ${s.card} flex flex-col`}>
-              <h4 className={`font-normal text-base md:text-lg xl:text-xl mb-2 ${s.text}`}>{p.t}</h4>
-              <p className={`font-light text-xs md:text-sm leading-relaxed ${s.subtext}`}>{p.d}</p>
+              <h4 className={`font-normal text-base md:text-lg xl:text-xl mb-2 ${s.text}`}>{p.title}</h4>
+              <p className={`font-light text-xs md:text-sm leading-relaxed ${s.subtext}`}>{p.description}</p>
            </div>
        ))}
     </div>
@@ -637,48 +640,60 @@ const WhyUsSections = (s: StyleConfig) => [
 
   // SECTION 3: CONCLUSION
   <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>Excellence & Agilité</h3>
+      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('why-us.section3.heading')}</h3>
       <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
          <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
          <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
-           Nous ne sommes pas seulement des consultants ou des développeurs. Nous sommes les architectes de votre croissance, alliant technologie et stratégie pour des résultats durables.
+           {t('why-us.section3.quote')}
          </p>
       </div>
   </div>
 ];
 
-const TeamSections = (s: StyleConfig) => {
-    // Leadership Team
-    const leadership = [
-      { name: "Édouard Nolet", role: "Co-fondateur, PDG", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop" },
-      { name: "Philippe Andrews", role: "Co-fondateur, Direction Générale", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop" },
-    ];
+const TeamSections = (s: StyleConfig, t: (key: string) => any) => {
+    // Leadership Team - use translations for roles, keep names as is
+    const leadershipData = t('team.leadership.members') as any[] || [];
+    const leadership = leadershipData.map((member, idx) => ({
+      name: member.name,
+      role: member.role,
+      img: idx === 0 
+        ? "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop"
+        : "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop"
+    }));
     
-    // Expert Team
-    const experts = [
-        { name: "Jean-Chérif Ayanou", role: "Directeur technique, Lead developpeur", img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop" },
-        { name: "Étienne Arsenault", role: "Lead dev sécurité, expert UI/UX", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop" },
-        { name: "Karine Boucher", role: "Consultante et experte gestion", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop" },
-    ];
+    // Expert Team - use translations for roles, keep names as is
+    const expertsData = t('team.experts.members') as any[] || [];
+    const experts = expertsData.map((member, idx) => ({
+        name: member.name,
+        role: member.role,
+        img: idx === 0
+          ? "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop"
+          : idx === 1
+          ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop"
+          : "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop"
+    }));
+
+    const portfolio = t('team.portfolio.projects') as any[] || [];
 
     return [
     // SECTION 1: INTRO
     <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-        <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>Notre Équipe</h3>
+        <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('team.intro.heading')}</h3>
         <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-        Les experts passionnés qui propulsent votre succès.
+        {t('team.intro.description1')}
         <br/><br/>
-        Derrière chaque solution innovante se cache une équipe dévouée. Découvrez les visages de ceux qui transforment vos ambitions en réalité.
+        {t('team.intro.description2')}
         </p>
         <div className="mt-8 md:mt-12 flex gap-4">
-            <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Passion</div>
-            <div className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>Expertise</div>
+            {(t('team.intro.tags') as string[] || []).map((tag, i) => (
+              <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+            ))}
         </div>
     </div>,
 
     // SECTION 2: LEADERSHIP (Alternating - Compact)
     <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-6xl">
-        <h3 className={`text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-normal mb-6 md:mb-8 ${s.text}`}>Direction</h3>
+        <h3 className={`text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-normal mb-6 md:mb-8 ${s.text}`}>{t('team.leadership.heading')}</h3>
         <div className="flex flex-col gap-6 md:gap-8">
             {leadership.map((member, idx) => (
                 <div key={idx} className={`flex flex-col md:flex-row items-center gap-6 md:gap-8 ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
@@ -700,7 +715,7 @@ const TeamSections = (s: StyleConfig) => {
 
     // SECTION 3: EXPERTS (Alternating)
     <div className="h-full flex flex-col justify-center max-w-6xl 2xl:max-w-7xl">
-        <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>Experts Techniques</h3>
+        <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('team.experts.heading')}</h3>
         <div className="flex flex-col gap-8">
             {experts.map((member, idx) => (
                 <div key={idx} className={`flex flex-col md:flex-row items-center gap-6 md:gap-12 ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
@@ -718,43 +733,32 @@ const TeamSections = (s: StyleConfig) => {
 
     // SECTION 4: PORTFOLIO
     <div className="h-full flex flex-col justify-center max-w-6xl 2xl:max-w-7xl">
-        <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>Portfolio Récent</h3>
+        <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('team.portfolio.heading')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 xl:gap-8">
-             {/* Project 1 */}
-             <div className={`group relative rounded-2xl overflow-hidden aspect-video ${s.card} cursor-pointer`}>
-                 <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500 grayscale group-hover:grayscale-0" />
+             {portfolio.map((project, idx) => (
+             <div key={idx} className={`group relative rounded-2xl overflow-hidden aspect-video ${s.card} cursor-pointer`}>
+                 <img src={idx === 0 ? "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2000&auto=format&fit=crop" : "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop"} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500 grayscale group-hover:grayscale-0" />
                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                  <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                     <p className="text-xs uppercase tracking-widest text-white/70 mb-2">Finance & Tech</p>
+                     <p className="text-xs uppercase tracking-widest text-white/70 mb-2">{project.category}</p>
                      <h4 className="text-xl md:text-2xl text-white font-normal flex items-center gap-3">
-                         Plateforme Fintech 
+                         {project.title}
                          <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
                      </h4>
                  </div>
              </div>
-             {/* Project 2 */}
-             <div className={`group relative rounded-2xl overflow-hidden aspect-video ${s.card} cursor-pointer`}>
-                 <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500 grayscale group-hover:grayscale-0" />
-                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                 <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                     <p className="text-xs uppercase tracking-widest text-white/70 mb-2">Immobilier</p>
-                     <h4 className="text-xl md:text-2xl text-white font-normal flex items-center gap-3">
-                         Gestion Immobilière 360
-                         <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
-                     </h4>
-                 </div>
-             </div>
+             ))}
         </div>
     </div>
     ];
 };
 
-const ContactSections = (s: StyleConfig) => [
+const ContactSections = (s: StyleConfig, t: (key: string) => any) => [
   // SECTION 1: Intro & Coordonnées
   <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-      <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>Contactez-Nous</h3>
+      <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('contact.intro.heading')}</h3>
       <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light mb-8 md:mb-12 ${s.subtext}`}>
-        Prêt à démarrer un projet ou simplement envie de discuter ? Nous sommes là pour vous.
+        {t('contact.intro.description')}
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -763,7 +767,7 @@ const ContactSections = (s: StyleConfig) => [
               <Mail className="w-6 h-6" />
            </div>
            <div>
-              <p className={`text-xs uppercase tracking-widest opacity-70 mb-1`}>Email</p>
+              <p className={`text-xs uppercase tracking-widest opacity-70 mb-1`}>{t('contact.form.fields.email')}</p>
               <p className={`text-lg md:text-xl font-medium`}>info@noletandrews.ca</p>
            </div>
         </a>
@@ -772,7 +776,7 @@ const ContactSections = (s: StyleConfig) => [
               <Phone className="w-6 h-6" />
            </div>
            <div>
-              <p className={`text-xs uppercase tracking-widest opacity-70 mb-1`}>Téléphone</p>
+              <p className={`text-xs uppercase tracking-widest opacity-70 mb-1`}>{t('contact.form.fields.phone')}</p>
               <p className={`text-lg md:text-xl font-medium`}>+1 (581) 986-8494</p>
            </div>
         </a>
@@ -781,31 +785,31 @@ const ContactSections = (s: StyleConfig) => [
 
   // SECTION 2: Formulaire
   <div className="h-full flex flex-col justify-center max-w-4xl mx-auto w-full">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-10 text-center ${s.text}`}>Envoyez-nous un message</h3>
+      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-10 text-center ${s.text}`}>{t('contact.form.heading')}</h3>
       <form className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>Prénom</label>
-             <input type="text" placeholder="Votre prénom" className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`} />
+             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.firstName')}</label>
+             <input type="text" placeholder={t('contact.form.placeholders.firstName')} className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`} />
           </div>
           <div className="space-y-2">
-             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>Nom de famille</label>
-             <input type="text" placeholder="Votre nom de famille" className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`} />
+             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.lastName')}</label>
+             <input type="text" placeholder={t('contact.form.placeholders.lastName')} className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`} />
           </div>
           <div className="space-y-2">
-             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>Téléphone</label>
-             <input type="tel" placeholder="Votre numéro de téléphone" className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`} />
+             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.phone')}</label>
+             <input type="tel" placeholder={t('contact.form.placeholders.phone')} className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`} />
           </div>
           <div className="space-y-2">
-             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>Email</label>
-             <input type="email" placeholder="Votre email" className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`} />
+             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.email')}</label>
+             <input type="email" placeholder={t('contact.form.placeholders.email')} className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`} />
           </div>
           <div className="space-y-2 md:col-span-2">
-             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>Message</label>
-             <textarea rows={4} placeholder="Parlez-nous de votre projet..." className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors resize-none placeholder:text-white/70 text-white`} />
+             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.message')}</label>
+             <textarea rows={4} placeholder={t('contact.form.placeholders.message')} className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors resize-none placeholder:text-white/70 text-white`} />
           </div>
           <div className="md:col-span-2 mt-4 flex justify-center">
              <button type="button" className={`px-10 py-4 rounded-full bg-white text-slate-900 font-bold flex items-center gap-2 hover:scale-105 transition-transform shadow-lg`}>
-                <span>Envoyer le message</span>
+                <span>{t('contact.form.submit')}</span>
                 <Send className="w-4 h-4" />
              </button>
           </div>
@@ -817,18 +821,18 @@ const ContactSections = (s: StyleConfig) => [
       <div className={`w-20 h-20 mb-8 rounded-full ${s.accentBg} flex items-center justify-center`}>
          <MessageSquare className="w-10 h-10" />
       </div>
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-6 ${s.text}`}>Besoin d'une réponse rapide ?</h3>
+      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-6 ${s.text}`}>{t('contact.chat.heading')}</h3>
       <p className={`text-lg md:text-xl font-light opacity-80 mb-10 max-w-xl`}>
-        Utilisez notre chat interactif pour discuter directement avec un membre de notre équipe disponible.
+        {t('contact.chat.description')}
       </p>
       <button className={`px-8 py-4 rounded-full ${s.card} border-2 border-white/20 hover:bg-white/10 transition-colors flex items-center gap-3`}>
-         <span className="font-medium">Démarrer le Chat</span>
+         <span className="font-medium">{t('contact.chat.button')}</span>
          <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
       </button>
   </div>
 ];
 
-const GenericSections = (item: GridItem, s: StyleConfig) => [
+const GenericSections = (item: GridItem, s: StyleConfig, t: (key: string, tile?: string) => any) => [
   <div className="h-full flex flex-col justify-center max-w-3xl 2xl:max-w-5xl">
     <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl font-light mb-4 md:mb-6 ${s.text}`}>Introduction</h3>
     <p className={`text-base md:text-xl lg:text-2xl xl:text-3xl font-light leading-relaxed mb-6 md:mb-8 ${s.subtext}`}>
@@ -868,6 +872,8 @@ const GenericSections = (item: GridItem, s: StyleConfig) => [
  * TileContent Manager
  */
 const TileContent: React.FC<TileContentProps> = ({ item, isMobile = false, isPortraitFlow = false }) => {
+  const { t } = useI18n();
+  
   const contentVariants = {
     hidden: { opacity: 0 },
     visible: { 
@@ -904,29 +910,29 @@ const TileContent: React.FC<TileContentProps> = ({ item, isMobile = false, isPor
   
   // SWITCH LOGIC FOR SPECIFIC CONTENT
   if (item.id === 'dev-solutions') {
-      sections = DevSolutionsSections(styles);
+      sections = DevSolutionsSections(styles, t);
   } else if (item.id === 'optimisation') {
-      sections = OptimisationSections(styles);
+      sections = OptimisationSections(styles, t);
   } else if (item.id === 'automatisation') {
-      sections = AutomatisationSections(styles);
+      sections = AutomatisationSections(styles, t);
   } else if (item.id === 'conseil') {
-      sections = ConseilSections(styles);
+      sections = ConseilSections(styles, t);
   } else if (item.id === 'data-analysis') {
-      sections = DataAnalysisSections(styles);
+      sections = DataAnalysisSections(styles, t);
   } else if (item.id === 'formation') {
-      sections = FormationSections(styles);
+      sections = FormationSections(styles, t);
   } else if (item.id === 'maintenance') {
-      sections = MaintenanceSections(styles);
+      sections = MaintenanceSections(styles, t);
   } else if (item.id === 'finance') {
-      sections = FinanceSections(styles);
+      sections = FinanceSections(styles, t);
   } else if (item.id === 'why-us') {
-      sections = WhyUsSections(styles);
+      sections = WhyUsSections(styles, t);
   } else if (item.id === 'team') {
-      sections = TeamSections(styles);
+      sections = TeamSections(styles, t);
   } else if (item.id === 'contact') {
-      sections = ContactSections(styles);
+      sections = ContactSections(styles, t);
   } else {
-      sections = GenericSections(item, styles);
+      sections = GenericSections(item, styles, t);
   }
 
   // Determine dot color for the scroll indicator

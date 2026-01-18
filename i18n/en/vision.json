@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "id": "vis-1",
+      "label": "Integrity",
+      "description": "Total transparency."
+    },
+    {
+      "id": "vis-2",
+      "label": "Growth",
+      "description": "Exceeded objectives."
+    },
+    {
+      "id": "vis-3",
+      "label": "Innovation",
+      "description": "Assured future."
+    },
+    {
+      "id": "vis-4",
+      "label": "Partnership",
+      "description": "Shared success."
+    },
+    {
+      "id": "vis-5",
+      "label": "Results",
+      "description": "Measurable gains."
+    },
+    {
+      "id": "vis-6",
+      "label": "Expertise",
+      "description": "Unique know-how."
+    }
+  ]
+}

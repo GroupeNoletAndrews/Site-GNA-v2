@@ -1,0 +1,32 @@
+{
+  "title": "Capital Humain",
+  "subtitle": "Coaching",
+  "description": "Formation et développement des compétences.",
+  "intro": {
+    "heading": "Capital Humain",
+    "description": "La réussite d'une entreprise repose autant sur les technologies que sur la force de ses équipes. Chez Groupe Nolet & Andrews, nous offrons des programmes de formation et un accompagnement adaptés qui renforcent les compétences de vos employés et dirigeants. Qu'il s'agisse de gestion, d'opérations ou d'outils numériques, nous sommes là pour vous guider.",
+    "tags": ["Compétences", "Autonomie"]
+  },
+  "section2": {
+    "heading": "Notre Pédagogie",
+    "point1": {
+      "number": "01",
+      "title": "Formations spécialisées",
+      "description": "Des contenus adaptés à votre secteur et à vos besoins réels, pour maximiser l'impact et la rétention des apprentissages."
+    },
+    "point2": {
+      "number": "02",
+      "title": "Ateliers pratiques",
+      "description": "Nous privilégions des sessions interactives qui privilégient l'action et permettent aux participants d'appliquer immédiatement leurs nouvelles connaissances."
+    },
+    "point3": {
+      "number": "03",
+      "title": "Accompagnement continu",
+      "description": "Nous restons disponibles pour donner un soutien durable, au-delà des formations, pour assurer l'autonomie, la confiance et la performance de vos équipes."
+    }
+  },
+  "section3": {
+    "heading": "Savoir & Performance",
+    "quote": "Former et accompagner vos équipes, c'est leur donner les outils humains et numériques pour s'adapter, évoluer et transformer la technologie en véritable moteur de performance."
+  }
+}

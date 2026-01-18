@@ -1,0 +1,31 @@
+{
+  "title": "Software Maintenance",
+  "subtitle": "& support",
+  "description": "Monitoring & security.",
+  "intro": {
+    "heading": "Software Maintenance",
+    "description": "Digital systems evolve, and their stability is as strategic as their design. We offer flexible and rigorous software maintenance services, both for our own solutions and for existing software, to ensure performance, security and operational continuity.",
+    "tags": ["Short Term", "Long Term"]
+  },
+  "section2": {
+    "heading": "A Structured Approach",
+    "point1": {
+      "number": "01",
+      "title": "Proactive maintenance",
+      "description": "We ensure monitoring, updates and necessary adjustments to prevent problems before they impact your operations."
+    },
+    "point2": {
+      "number": "02",
+      "title": "Continuous adaptation",
+      "description": "Your tools evolve with your business. We optimize and adjust functionality according to your new needs and field realities."
+    },
+    "card": {
+      "title": "Reliable technical support",
+      "description": "Our teams intervene quickly to correct, stabilize or improve your software, whether developed by GNA or by third parties."
+    }
+  },
+  "section3": {
+    "heading": "Sustainable Impact",
+    "quote": "Ensuring maintenance of your software means protecting your operations, extending the life of your tools and guaranteeing constant performance over time."
+  }
+}

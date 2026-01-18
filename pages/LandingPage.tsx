@@ -5,9 +5,13 @@ import Tile from '../components/UI/Tile';
 import VisionBar from '../components/Layout/VisionBar';
 import CentralPage from '../components/Content/CentralPage';
 import TileContent from '../components/Content/TileContent';
+import LanguageSwitcher from '../components/UI/LanguageSwitcher';
+import { useI18n } from '../contexts/I18nContext';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 const LandingPage: React.FC = () => {
+  const { t } = useI18n();
+  
   // --- DESKTOP STATE ---
   const [activeId, setActiveId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -234,7 +238,7 @@ const LandingPage: React.FC = () => {
                         <p className="text-white text-sm xs:text-base sm:text-lg font-light leading-snug max-w-xs sm:max-w-md drop-shadow-md">{heroItem?.description}</p>
                     </div>
                     <div className="flex flex-col items-center gap-2 text-white/60 animate-bounce cursor-pointer" onClick={() => setMobileSection(1)}>
-                        <span className="text-[10px] xs:text-xs uppercase tracking-widest">Découvrir</span>
+                        <span className="text-[10px] xs:text-xs uppercase tracking-widest">{t('landing.mobile.decouvrir')}</span>
                         <ChevronDown className="w-5 h-5" />
                     </div>
                 </div>
@@ -261,7 +265,7 @@ const LandingPage: React.FC = () => {
                             <img src="https://plexview.ca/assets/Nolet__andrews_blanc-CHc9YYqz.png" alt="Logo" className="h-full w-auto object-contain opacity-100 drop-shadow-md" />
                         </div>
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-                            <span className="text-xs xs:text-sm sm:text-base font-normal tracking-wide text-white uppercase drop-shadow-sm">Services offerts</span>
+                            <span className="text-xs xs:text-sm sm:text-base font-normal tracking-wide text-white uppercase drop-shadow-sm">{t('landing.mobile.servicesOfferts')}</span>
                         </div>
                         {/* Mobile Menu Button REMOVED */}
                     </div>
@@ -381,7 +385,7 @@ const LandingPage: React.FC = () => {
                 <AnimatePresence>
                   {showMobileFooter && (
                     <motion.div initial={{ y: '100%' }} animate={{ y: '0%' }} exit={{ y: '100%' }} transition={{ duration: 0.3 }} className="absolute bottom-0 left-0 w-full h-11 z-50 bg-white/95 backdrop-blur-sm border-t border-slate-100 flex items-center justify-center shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
-                      <p className="text-[10px] sm:text-xs text-slate-500 font-medium uppercase tracking-widest">© 2026 Groupe Nolet & Andrews</p>
+                      <p className="text-[10px] sm:text-xs text-slate-500 font-medium uppercase tracking-widest">{t('landing.mobile.copyright')}</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -482,10 +486,10 @@ const LandingPage: React.FC = () => {
                             transition={{ delay: 0.5, duration: 0.8 }}
                             >
                                 <h2 className="text-3xl md:text-5xl font-light text-slate-800 leading-tight">
-                                    C'est parti ! 
+                                    {t('common.cestParti')}
                                 </h2>
                                 <p className="mt-6 text-lg md:text-2xl text-slate-600 font-light leading-relaxed">
-                                    Naviguez les tuiles pour découvrir nos services <br/> et en apprendre plus sur nous.
+                                    {t('common.naviguezTuiles')} <br/> {t('common.enApprendrePlus')}
                                 </p>
                             </motion.div>
                         )}
@@ -511,6 +515,9 @@ const LandingPage: React.FC = () => {
             </div>
         </div>
       )}
+
+      {/* Language Switcher - Flottant pour tous les layouts */}
+      <LanguageSwitcher />
 
     </div>
   );

@@ -1,0 +1,54 @@
+{
+  "title": "Notre Équipe",
+  "subtitle": "Talents & réalisations",
+  "description": "Experts passionnés.",
+  "intro": {
+    "heading": "Notre Équipe",
+    "description1": "Les experts passionnés qui propulsent votre succès.",
+    "description2": "Derrière chaque solution innovante se cache une équipe dévouée. Découvrez les visages de ceux qui transforment vos ambitions en réalité.",
+    "tags": ["Passion", "Expertise"]
+  },
+  "leadership": {
+    "heading": "Direction",
+    "members": [
+      {
+        "name": "Édouard Nolet",
+        "role": "Co-fondateur, PDG"
+      },
+      {
+        "name": "Philippe Andrews",
+        "role": "Co-fondateur, Direction Générale"
+      }
+    ]
+  },
+  "experts": {
+    "heading": "Experts Techniques",
+    "members": [
+      {
+        "name": "Jean-Chérif Ayanou",
+        "role": "Directeur technique, Lead developpeur"
+      },
+      {
+        "name": "Étienne Arsenault",
+        "role": "Lead dev sécurité, expert UI/UX"
+      },
+      {
+        "name": "Karine Boucher",
+        "role": "Consultante et experte gestion"
+      }
+    ]
+  },
+  "portfolio": {
+    "heading": "Portfolio Récent",
+    "projects": [
+      {
+        "category": "Finance & Tech",
+        "title": "Plateforme Fintech"
+      },
+      {
+        "category": "Immobilier",
+        "title": "Gestion Immobilière 360"
+      }
+    ]
+  }
+}

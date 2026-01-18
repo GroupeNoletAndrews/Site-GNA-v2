@@ -1,0 +1,32 @@
+{
+  "title": "Decision Clarity",
+  "subtitle": "BI & analytics",
+  "description": "Actionable data & dashboards.",
+  "intro": {
+    "heading": "Decision Clarity",
+    "description": "Data analysis and business intelligence enable companies to transform raw information into strategic levers. Our goal is to help you better understand your activities and guide your decisions with clear, visual solutions adapted to your reality.",
+    "tags": ["Intelligence", "Visualization"]
+  },
+  "section2": {
+    "heading": "Our Expertise",
+    "point1": {
+      "number": "01",
+      "title": "Data assessment",
+      "description": "We study, structure and organize your data to reveal trends and indicators relevant to your business."
+    },
+    "point2": {
+      "number": "02",
+      "title": "Dashboards",
+      "description": "We develop visual and dynamic tools that allow you to track your performance in real time and simplify reading key information."
+    },
+    "point3": {
+      "number": "03",
+      "title": "Custom solutions",
+      "description": "We design solutions adapted to your needs so that every decision is based on reliable and actionable data."
+    }
+  },
+  "section3": {
+    "heading": "Strategic Insights",
+    "quote": "With data analysis and business intelligence, your choices no longer rely on intuition alone: they are guided by measurable facts and strategic insights."
+  }
+}

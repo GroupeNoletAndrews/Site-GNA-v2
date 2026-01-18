@@ -1,0 +1,32 @@
+{
+  "title": "Performance & Modernité",
+  "subtitle": "SEO & performance",
+  "description": "Modernisation et optimisation web complète.",
+  "intro": {
+    "heading": "Performance & Modernité",
+    "description": "L'optimisation et la modernisation de votre présence web sont des piliers essentiels pour assurer la performance, la crédibilité et la compétitivité de votre entreprise en ligne. Notre approche combine analyse technique, design, expérience utilisateur (UX) et référencement naturel (SEO) afin de maximiser vos résultats numériques.",
+    "tags": ["UX/UI Design", "SEO Technique"]
+  },
+  "section2": {
+    "heading": "Notre Approche",
+    "point1": {
+      "number": "01",
+      "title": "Design & Performance",
+      "description": "Un site au visuel soigné et contemporain reflète l'image de votre entreprise. Nous repensons l'interface pour qu'elle soit attrayante et alignée avec votre identité, tout en garantissant une vitesse de chargement optimale."
+    },
+    "point2": {
+      "number": "02",
+      "title": "UX & Mobile",
+      "description": "Nous repensons la navigation pour une expérience simple et intuitive. Votre site sera parfaitement responsive et accessible sur tous les appareils, du téléphone à l'ordinateur."
+    },
+    "point3": {
+      "number": "03",
+      "title": "SEO & Sécurité",
+      "description": "Optimisation du code et du contenu pour les moteurs de recherche. Mise à jour de l'infrastructure et des protocoles de sécurité pour une fiabilité totale."
+    }
+  },
+  "section3": {
+    "heading": "Performance & Conversion",
+    "quote": "Transformer votre site en un outil de performance moderne qui attire, engage et convertit : voilà notre objectif."
+  }
+}

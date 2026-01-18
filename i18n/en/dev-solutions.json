@@ -1,0 +1,31 @@
+{
+  "title": "Digital Solutions",
+  "subtitle": "Web & mobile apps",
+  "description": "Custom applications for your business.",
+  "intro": {
+    "heading": "Digital Solutions",
+    "description": "Every business is unique, and so are its technological needs. We design customized digital solutions that integrate perfectly with your reality and support your business objectives.",
+    "tags": ["Custom", "Strategic"]
+  },
+  "section2": {
+    "heading": "An Adapted Approach",
+    "point1": {
+      "number": "01",
+      "title": "Adapted management tools",
+      "description": "We develop internal applications or specialized platforms that meet your specific processes and improve your efficiency."
+    },
+    "point2": {
+      "number": "02",
+      "title": "Scalable solutions",
+      "description": "Our developments are designed to adapt to your company's growth and new market requirements."
+    },
+    "card": {
+      "title": "Smooth integration",
+      "description": "We ensure that every deployed solution harmonizes with your existing systems, guaranteeing a simple transition and rapid adoption by your teams."
+    }
+  },
+  "section3": {
+    "heading": "Sustainable Impact",
+    "quote": "Developing custom digital solutions means transforming your operational challenges into opportunities for innovation and sustainable performance."
+  }
+}

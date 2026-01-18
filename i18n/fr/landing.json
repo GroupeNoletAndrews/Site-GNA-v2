@@ -1,0 +1,16 @@
+{
+  "mobile": {
+    "decouvrir": "Découvrir",
+    "servicesOfferts": "Services offerts",
+    "copyright": "© 2026 Groupe Nolet & Andrews"
+  },
+  "hero": {
+    "title": "Développement sur mesure",
+    "subtitle": "Web & mobile apps"
+  },
+  "cta": {
+    "heading": "Prêt à bâtir l'avenir ?",
+    "description": "Nos experts sont prêts à transformer vos ambitions en résultats concrets. Rejoignez le Groupe Nolet & Andrews pour une expérience sans compromis.",
+    "button": "Démarrer un projet"
+  }
+}

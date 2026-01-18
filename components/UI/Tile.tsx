@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GridItem } from '../../types';
 import { GRID_ITEMS } from '../../constants';
+import { useI18n } from '../../contexts/I18nContext';
 import { ArrowUpRight, Menu as MenuIcon, ArrowRight, ArrowLeft, MousePointerClick, LayoutGrid, RotateCcw } from 'lucide-react';
 
 interface TileProps {
@@ -90,14 +91,54 @@ const DateDisplay = () => {
 };
 
 const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = false, isIntroExiting = false, introAnimationFinished = false, isPortrait = false, collapsedIndex, onActivate, onClose, onBackToIntro, hoveredId, setHoveredId }) => {
+  const { t } = useI18n();
   const [isHovering, setIsHovering] = useState(false);
-  const [isExiting, setIsExiting] = useState(false); 
+  const [isExiting, setIsExiting] = useState(false);
+  const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 1000);
+  
+  const getTranslatedItem = () => {
+    const tileKey = item.id;
+    
+    const translatedTitleKey = `${tileKey}.title`;
+    const translatedTitleValue = t(translatedTitleKey);
+    const translatedTitle = translatedTitleValue !== translatedTitleKey ? translatedTitleValue : item.title;
+    
+    const translatedSubtitle = item.subtitle ? (() => {
+      const key = `${tileKey}.subtitle`;
+      const value = t(key);
+      return value !== key ? value : item.subtitle;
+    })() : item.subtitle;
+    
+    const translatedDescription = item.description ? (() => {
+      const key = `${tileKey}.description`;
+      const value = t(key);
+      return value !== key ? value : item.description;
+    })() : item.description;
+    
+    return { title: translatedTitle, subtitle: translatedSubtitle, description: translatedDescription };
+  };
+  
+  const translatedItem = getTranslatedItem(); 
 
   useEffect(() => {
     if (!isActive) {
       setIsExiting(false);
     }
   }, [isActive]);
+
+  // Écouter les changements de taille de fenêtre pour cacher la description sur petits écrans
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowHeight(window.innerHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Appel initial
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   // --- EVENTS ---
   const handleMouseEnter = () => { setIsHovering(true); setHoveredId(item.id); };
@@ -456,8 +497,8 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
 
                              {/* TITLE/SUBTITLE CENTERED (OPTIONAL BUT GOOD FOR BALANCE) */}
                              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full px-20">
-                                <h1 className="text-white text-3xl font-light tracking-tight">{item.title}</h1>
-                                <p className="text-white/70 text-sm uppercase tracking-widest mt-2">{item.subtitle}</p>
+                                <h1 className="text-white text-3xl font-light tracking-tight">{translatedItem.title}</h1>
+                                <p className="text-white/70 text-sm uppercase tracking-widest mt-2">{translatedItem.subtitle}</p>
                              </div>
 
                              {/* BACK BUTTON BOTTOM RIGHT */}
@@ -466,7 +507,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                                     onClick={(e) => { e.stopPropagation(); onBackToIntro(); }}
                                     className="absolute bottom-6 right-8 flex items-center gap-2 text-white/80 hover:text-white transition-colors bg-black/20 hover:bg-black/30 px-4 py-2 rounded-full backdrop-blur-sm"
                                  >
-                                    <span className="text-xs uppercase tracking-widest">Accueil</span>
+                                                    <span className="text-xs uppercase tracking-widest">{t('common.accueil')}</span>
                                     <RotateCcw className="w-4 h-4" />
                                  </button>
                              )}
@@ -558,7 +599,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                                                     transition={{ delay: 0.6, duration: 0.8 }}
                                                     className="text-white text-3xl md:text-5xl xl:text-6xl font-light tracking-tight mb-4 drop-shadow-lg"
                                                 >
-                                                    Bienvenue
+                                                    {t('common.bienvenue')}
                                                 </motion.h1>
                                                 <motion.p 
                                                     initial={{ opacity: 0 }}
@@ -566,7 +607,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                                                     transition={{ delay: 1.2, duration: 0.8 }}
                                                     className="text-white/80 text-sm md:text-lg xl:text-xl uppercase tracking-widest font-light"
                                                 >
-                                                    Une vision 360° de vos affaires
+                                                    {t('common.vision360')}
                                                 </motion.p>
                                             </motion.div>
 
@@ -582,7 +623,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                                                 className={`mt-12 flex flex-col items-center gap-2 animate-bounce cursor-pointer ${isIntroExiting ? 'pointer-events-none' : ''}`}
                                             >
                                                 <MousePointerClick className="w-6 h-6 text-white/50" />
-                                                <span className="text-white/50 text-[10px] uppercase tracking-widest">Cliquez pour entrer</span>
+                                                <span className="text-white/50 text-[10px] uppercase tracking-widest">{t('common.cliquezPourEntrer')}</span>
                                             </motion.div>
                                         </>
                                     )}
@@ -625,7 +666,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                                                     onClick={(e) => { e.stopPropagation(); onBackToIntro(); }}
                                                     className="flex items-center gap-2 text-white/80 hover:text-white transition-colors bg-black/20 hover:bg-black/30 border border-white/5 px-6 py-2 rounded-full backdrop-blur-sm shadow-lg pointer-events-auto"
                                                 >
-                                                    <span className="text-xs uppercase tracking-widest font-medium">Accueil</span>
+                                                    <span className="text-xs uppercase tracking-widest font-medium">{t('common.accueil')}</span>
                                                     <RotateCcw className="w-3.5 h-3.5" />
                                                 </button>
                                             </motion.div>
@@ -648,7 +689,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                                                 <div className="border-l-2 border-white/40 pl-4 hidden md:block">
                                                     {/* Added min-w-[240px] to prevent text reflow/squashing during exit animation */}
                                                     <p className="font-normal text-xs md:text-sm lg:text-base xl:text-lg leading-snug text-slate-100 max-w-[240px] xl:max-w-[320px] min-w-[240px] drop-shadow-md">
-                                                    {item.description}
+                                                    {translatedItem.description}
                                                     </p>
                                                 </div>
                                             </div>
@@ -715,7 +756,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                                                 // ADDED: whitespace-normal break-words leading-[0.9rem] for text wrapping
                                                 className={`hidden md:block font-medium uppercase tracking-wider leading-[0.9rem] whitespace-normal break-words w-full px-1 mt-2 opacity-80 text-[10px] relative z-20`}
                                             >
-                                                {item.title}
+                                                {translatedItem.title}
                                             </motion.h3>
                                         </>
                                     )}
@@ -756,19 +797,21 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                                 </div>
                                 <div className="flex flex-col gap-0.5">
                                     <h3 className="font-normal text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl leading-tight tracking-tight">
-                                        {item.title}
+                                        {translatedItem.title}
                                     </h3>
                                     {item.subtitle && (
-                                        <p className="text-[9px] md:text-[10px] lg:text-xs xl:text-sm font-normal tracking-wide opacity-70">
-                                        {item.subtitle}
+                                        <p className="text-[9px] md:text-[10px] lg:text-xs xl:text-sm font-normal tracking-wide opacity-70 whitespace-nowrap">
+                                        {translatedItem.subtitle}
                                         </p>
                                     )}
                                 </div>
                              </div>
 
-                             <p className="mt-2 text-[10px] md:text-xs lg:text-sm xl:text-base opacity-80 line-clamp-2 leading-tight md:leading-relaxed font-light">
-                                {item.description}
-                             </p>
+                             {windowHeight >= 1000 && (
+                                <p className="mt-2 text-[10px] md:text-xs lg:text-sm xl:text-base opacity-80 line-clamp-2 leading-tight md:leading-relaxed font-light">
+                                    {translatedItem.description}
+                                </p>
+                             )}
                         </motion.div>
                     )}
                 </AnimatePresence>

@@ -1,0 +1,35 @@
+{
+  "scroll": "Scrollez",
+  "section": "Section",
+  "accueil": "Accueil",
+  "bienvenue": "Bienvenue",
+  "vision360": "Une vision 360° de vos affaires",
+  "cliquezPourEntrer": "Cliquez pour entrer",
+  "cestParti": "C'est parti !",
+  "naviguezTuiles": "Naviguez les tuiles pour découvrir nos services",
+  "enApprendrePlus": "et en apprendre plus sur nous.",
+  "alleraSection": "Aller à la section",
+  "generic": {
+    "intro": {
+      "heading": "Introduction",
+      "description": "Découvrez l'approche unique de Groupe Nolet & Andrews pour"
+    },
+    "section2": {
+      "heading": "Points Clés",
+      "expertise": {
+        "title": "Expertise",
+        "description": "Une approche basée sur des années d'expérience et une méthodologie éprouvée."
+      },
+      "innovation": {
+        "title": "Innovation",
+        "description": "Utilisation des dernières technologies pour garantir un avantage compétitif."
+      }
+    },
+    "section3": {
+      "heading": "Prêt à avancer ?",
+      "description": "Contactez notre équipe pour discuter de la manière dont",
+      "descriptionEnd": "peut transformer votre entreprise.",
+      "button": "En savoir plus"
+    }
+  }
+}

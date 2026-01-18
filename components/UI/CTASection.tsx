@@ -1,8 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import { useI18n } from '../../contexts/I18nContext';
 
 const CTASection: React.FC = () => {
+  const { t } = useI18n();
+  
   return (
     <section className="w-full py-16 flex flex-col items-center text-center relative overflow-hidden">
       {/* Decorative background element */}
@@ -16,11 +19,10 @@ const CTASection: React.FC = () => {
         className="max-w-3xl px-6"
       >
         <h2 className="text-3xl md:text-5xl font-normal text-slate-900 mb-6 tracking-tight">
-          Prêt à bâtir l'avenir ?
+          {t('landing.cta.heading')}
         </h2>
         <p className="text-lg text-slate-600 mb-8 max-w-xl mx-auto font-light">
-          Nos experts sont prêts à transformer vos ambitions en résultats concrets. 
-          Rejoignez le Groupe Nolet & Andrews pour une expérience sans compromis.
+          {t('landing.cta.description')}
         </p>
         
         <motion.button
@@ -28,7 +30,7 @@ const CTASection: React.FC = () => {
           whileTap={{ scale: 0.95 }}
           className="group relative inline-flex items-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-full font-normal text-lg overflow-hidden shadow-lg shadow-slate-900/20"
         >
-          <span className="relative z-10">Démarrer un projet</span>
+          <span className="relative z-10">{t('landing.cta.button')}</span>
           <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
           
           {/* Button Shine Effect */}

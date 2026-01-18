@@ -1,0 +1,31 @@
+{
+  "title": "Solutions Numériques",
+  "subtitle": "Web & mobile apps",
+  "description": "Applications sur mesure pour votre entreprise.",
+  "intro": {
+    "heading": "Solutions Numériques",
+    "description": "Chaque entreprise est unique, et ses besoins technologiques le sont tout autant. Nous concevons des solutions numériques personnalisées qui s'intègrent parfaitement à votre réalité et soutiennent vos objectifs d'affaires.",
+    "tags": ["Sur Mesure", "Stratégique"]
+  },
+  "section2": {
+    "heading": "Une Approche Adaptée",
+    "point1": {
+      "number": "01",
+      "title": "Outils de gestion adaptés",
+      "description": "Nous développons des applications internes ou des plateformes spécialisées qui répondent à vos processus spécifiques et améliorent votre efficacité."
+    },
+    "point2": {
+      "number": "02",
+      "title": "Solutions évolutives",
+      "description": "Nos développements sont pensés pour s'adapter à la croissance de votre entreprise et aux nouvelles exigences de votre marché."
+    },
+    "card": {
+      "title": "Intégration fluide",
+      "description": "Nous veillons à ce que chaque solution déployée s'harmonise avec vos systèmes existants, garantissant une transition simple et une adoption rapide par vos équipes."
+    }
+  },
+  "section3": {
+    "heading": "Impact Durable",
+    "quote": "Développer des solutions digitales sur mesure, c'est transformer vos défis opérationnels en opportunités d'innovation et de performance durable."
+  }
+}

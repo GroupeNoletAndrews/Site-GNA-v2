@@ -1,0 +1,32 @@
+{
+  "title": "Vision Stratégique",
+  "subtitle": "Stratégie",
+  "description": "Consultation senior.",
+  "intro": {
+    "heading": "Vision Stratégique",
+    "description": "Les conseils d'affaires et la consultation stratégique sont au cœur de la croissance durable d'une entreprise. Notre rôle est de vous accompagner dans vos décisions clés en vous offrant une vision claire, des outils concrets et un plan d'action aligné sur vos objectifs.",
+    "tags": ["Croissance", "Rentabilité"]
+  },
+  "section2": {
+    "heading": "Axes Stratégiques",
+    "point1": {
+      "number": "01",
+      "title": "Analyse & Diagnostic",
+      "description": "Nous étudions votre environnement d'affaires, vos concurrents et vos opportunités afin de définir les leviers de croissance les plus pertinents."
+    },
+    "point2": {
+      "number": "02",
+      "title": "Planification",
+      "description": "Nous vous aidons à bâtir une feuille de route claire, avec des étapes mesurables, afin que vos initiatives numériques et organisationnelles soutiennent vos objectifs d'affaires."
+    },
+    "point3": {
+      "number": "03",
+      "title": "Optimisation",
+      "description": "En repensant vos méthodes de travail et vos outils, nous améliorons l'efficacité et la rentabilité de votre entreprise tout en réduisant les frictions opérationnelles."
+    }
+  },
+  "section3": {
+    "heading": "Partenariat Durable",
+    "quote": "La consultation n'est pas seulement un accompagnement : c'est un partenariat qui vous permet de prendre de meilleures décisions et de transformer vos ambitions en résultats tangibles."
+  }
+}

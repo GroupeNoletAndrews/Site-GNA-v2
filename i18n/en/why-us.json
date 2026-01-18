@@ -1,0 +1,43 @@
+{
+  "title": "Trusted Partner",
+  "description": "A unique integrated approach on the market.",
+  "intro": {
+    "heading": "Trusted Partner",
+    "question": "What if your operations were as agile as your business vision?",
+    "description": "With more than 30 years of experience in digital strategy, management and technology, we offer an integrated vision that covers the entire business spectrum: optimization, transformation and strategic consulting.",
+    "tags": ["30+ Years Expertise", "360° Vision"]
+  },
+  "section2": {
+    "heading": "Our Commitments",
+    "points": [
+      {
+        "title": "Custom approach",
+        "description": "Each solution is adapted to your objectives, resources and business reality."
+      },
+      {
+        "title": "Concrete results",
+        "description": "Our recommendations are always oriented towards measurable and sustainable gains."
+      },
+      {
+        "title": "Continuous innovation",
+        "description": "We integrate best practices and technologies to keep your solutions up to date."
+      },
+      {
+        "title": "Human support",
+        "description": "A partnership based on transparency, trust and clear communication."
+      },
+      {
+        "title": "Security and compliance",
+        "description": "Your data and tools are protected according to the strictest standards (Law 25, GDPR)."
+      },
+      {
+        "title": "Sustainable support",
+        "description": "We remain present after implementation to ensure follow-up, evolution and sustainability."
+      }
+    ]
+  },
+  "section3": {
+    "heading": "Excellence & Agility",
+    "quote": "We are not just consultants or developers. We are the architects of your growth, combining technology and strategy for sustainable results."
+  }
+}

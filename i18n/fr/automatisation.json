@@ -1,0 +1,32 @@
+{
+  "title": "Efficacité Opérationnelle",
+  "subtitle": "Workflows & IA",
+  "description": "Automatisation intelligente de vos processus.",
+  "intro": {
+    "heading": "Efficacité Opérationnelle",
+    "description": "L'automatisation est un levier puissant pour accroître l'efficacité et libérer du temps précieux au sein des entreprises. Nous vous accompagnons dans l'intégration de solutions numériques qui simplifient vos processus, réduisent les erreurs et augmentent la productivité de vos équipes.",
+    "tags": ["Productivité", "Intelligence"]
+  },
+  "section2": {
+    "heading": "Nos Interventions",
+    "point1": {
+      "number": "01",
+      "title": "Processus répétitifs",
+      "description": "Nous identifions les tâches à faible valeur ajoutée et mettons en place des solutions pour les exécuter automatiquement."
+    },
+    "point2": {
+      "number": "02",
+      "title": "Outils collaboratifs",
+      "description": "Nous déployons des plateformes modernes (CRM, outils de gestion, solutions collaboratives) pour centraliser l'information et améliorer la communication interne."
+    },
+    "point3": {
+      "number": "03",
+      "title": "Flux de travail",
+      "description": "Nous analysons vos méthodes actuelles afin de concevoir des workflows plus fluides, plus rapides et mieux adaptés à vos objectifs d'affaires."
+    }
+  },
+  "section3": {
+    "heading": "Libérez votre potentiel",
+    "quote": "Automatiser et optimiser vos processus, c'est donner à vos équipes plus de temps pour se concentrer sur ce qui compte vraiment : l'innovation, la croissance et la satisfaction de vos clients."
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "title": "Financial Support & Grants",
+  "subtitle": "& grants",
+  "description": "R&D credits, CDAE.",
+  "intro": {
+    "heading": "Financial Support & Grants",
+    "description": "Although Groupe Nolet & Andrews does not offer direct financing, we support businesses in the complete financial analysis of their projects to identify financing programs and grants available in Quebec and Canada.",
+    "tags": ["Analysis", "Support"]
+  },
+  "section2": {
+    "heading": "An Informed Approach",
+    "point1": {
+      "number": "01",
+      "title": "Project analysis",
+      "description": "We assess your company's structure, your project's viability and its alignment with existing program criteria."
+    },
+    "point2": {
+      "number": "02",
+      "title": "Eligibility & strategy",
+      "description": "We identify relevant grants, credits or programs and build a realistic strategy to maximize your chances of acceptance."
+    },
+    "card": {
+      "title": "Process management",
+      "description": "We can handle the preparation, completion and transmission of required applications and forms, saving you time and reducing the risk of errors."
+    }
+  },
+  "section3": {
+    "heading": "Sustainable Impact",
+    "quote": "Good financial support means transforming a solid project into a concrete opportunity, while efficiently navigating available programs."
+  }
+}

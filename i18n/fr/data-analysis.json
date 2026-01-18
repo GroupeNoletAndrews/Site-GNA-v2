@@ -1,0 +1,32 @@
+{
+  "title": "Clarté Décisionnelle",
+  "subtitle": "BI & analytics",
+  "description": "Données exploitables & tableaux de bord.",
+  "intro": {
+    "heading": "Clarté Décisionnelle",
+    "description": "L'analyse de données et l'intelligence d'affaires permettent aux entreprises de transformer l'information brute en leviers stratégiques. Notre objectif est de vous aider à mieux comprendre vos activités et à orienter vos décisions grâce à des solutions claires, visuelles et adaptées à votre réalité.",
+    "tags": ["Intelligence", "Visualisation"]
+  },
+  "section2": {
+    "heading": "Notre Expertise",
+    "point1": {
+      "number": "01",
+      "title": "Évaluation des données",
+      "description": "Nous étudions, structurons et organisons vos données afin de révéler des tendances et des indicateurs pertinents pour votre entreprise."
+    },
+    "point2": {
+      "number": "02",
+      "title": "Tableaux de bord",
+      "description": "Nous développons des outils visuels et dynamiques qui permettent de suivre vos performances en temps réel et de simplifier la lecture de l'information clé."
+    },
+    "point3": {
+      "number": "03",
+      "title": "Sur mesure",
+      "description": "Nous concevons des solutions adaptées à vos besoins afin que chaque décision s'appuie sur des données fiables et exploitables."
+    }
+  },
+  "section3": {
+    "heading": "Insights Stratégiques",
+    "quote": "Avec l'analyse de données et l'intelligence d'affaires, vos choix ne reposent plus sur l'intuition seule : ils sont guidés par des faits mesurables et des insights stratégiques."
+  }
+}

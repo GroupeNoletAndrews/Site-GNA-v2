@@ -1,0 +1,31 @@
+{
+  "title": "Maintenance Logicielle",
+  "subtitle": "& support",
+  "description": "Veille & sécurité.",
+  "intro": {
+    "heading": "Maintenance Logicielle",
+    "description": "Les systèmes numériques évoluent, et leur stabilité est aussi stratégique que leur conception. Nous offrons des services de maintenance logicielle flexibles et rigoureux, autant pour nos propres solutions que pour des logiciels existants, afin d'assurer performance, sécurité et continuité opérationnelle.",
+    "tags": ["Court Terme", "Long Terme"]
+  },
+  "section2": {
+    "heading": "Une Approche Structurée",
+    "point1": {
+      "number": "01",
+      "title": "Maintenance proactive",
+      "description": "Nous assurons la surveillance, les mises à jour et les ajustements nécessaires pour prévenir les problèmes avant qu'ils n'impactent vos opérations."
+    },
+    "point2": {
+      "number": "02",
+      "title": "Adaptation continue",
+      "description": "Vos outils évoluent avec votre entreprise. Nous optimisons et ajustons les fonctionnalités selon vos nouveaux besoins et vos réalités terrain."
+    },
+    "card": {
+      "title": "Support technique fiable",
+      "description": "Nos équipes interviennent rapidement pour corriger, stabiliser ou améliorer vos logiciels, qu'ils aient été développés par GNA ou par des tiers."
+    }
+  },
+  "section3": {
+    "heading": "Impact Durable",
+    "quote": "Assurer la maintenance de vos logiciels, c'est protéger vos opérations, prolonger la durée de vie de vos outils et garantir une performance constante dans le temps."
+  }
+}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { I18nProvider } from './contexts/I18nContext';
 import LandingPage from './pages/LandingPage';
 
 /**
@@ -9,7 +10,9 @@ import LandingPage from './pages/LandingPage';
  */
 function App() {
   return (
-    <LandingPage />
+    <I18nProvider>
+      <LandingPage />
+    </I18nProvider>
   );
 }
 

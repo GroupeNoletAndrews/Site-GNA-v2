@@ -1,0 +1,32 @@
+{
+  "title": "Strategic Vision",
+  "subtitle": "Strategy",
+  "description": "Senior consultation.",
+  "intro": {
+    "heading": "Strategic Vision",
+    "description": "Business advice and strategic consulting are at the heart of a company's sustainable growth. Our role is to support you in your key decisions by offering you a clear vision, concrete tools and an action plan aligned with your objectives.",
+    "tags": ["Growth", "Profitability"]
+  },
+  "section2": {
+    "heading": "Strategic Axes",
+    "point1": {
+      "number": "01",
+      "title": "Analysis & Diagnosis",
+      "description": "We study your business environment, competitors and opportunities to define the most relevant growth levers."
+    },
+    "point2": {
+      "number": "02",
+      "title": "Planning",
+      "description": "We help you build a clear roadmap, with measurable steps, so that your digital and organizational initiatives support your business objectives."
+    },
+    "point3": {
+      "number": "03",
+      "title": "Optimization",
+      "description": "By rethinking your working methods and tools, we improve the efficiency and profitability of your business while reducing operational friction."
+    }
+  },
+  "section3": {
+    "heading": "Sustainable Partnership",
+    "quote": "Consulting is not just support: it's a partnership that allows you to make better decisions and transform your ambitions into tangible results."
+  }
+}

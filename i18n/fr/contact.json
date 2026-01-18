@@ -1,0 +1,32 @@
+{
+  "title": "Contactez-Nous",
+  "subtitle": "Discussion & devis",
+  "description": "Lancez votre projet.",
+  "intro": {
+    "heading": "Contactez-Nous",
+    "description": "Prêt à démarrer un projet ou simplement envie de discuter ? Nous sommes là pour vous."
+  },
+  "form": {
+    "heading": "Envoyez-nous un message",
+    "fields": {
+      "firstName": "Prénom",
+      "lastName": "Nom de famille",
+      "phone": "Téléphone",
+      "email": "Email",
+      "message": "Message"
+    },
+    "placeholders": {
+      "firstName": "Votre prénom",
+      "lastName": "Votre nom de famille",
+      "phone": "Votre numéro de téléphone",
+      "email": "Votre email",
+      "message": "Parlez-nous de votre projet..."
+    },
+    "submit": "Envoyer le message"
+  },
+  "chat": {
+    "heading": "Besoin d'une réponse rapide ?",
+    "description": "Utilisez notre chat interactif pour discuter directement avec un membre de notre équipe disponible.",
+    "button": "Démarrer le Chat"
+  }
+}

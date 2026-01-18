@@ -1,0 +1,43 @@
+{
+  "title": "Partenaire de Confiance",
+  "description": "Une approche intégrée unique sur le marché.",
+  "intro": {
+    "heading": "Partenaire de Confiance",
+    "question": "Et si vos opérations étaient aussi agiles que votre vision d'affaires ?",
+    "description": "Avec plus de 30 ans d'expérience en stratégie numérique, gestion et technologies, nous offrons une vision intégrée qui couvre l'ensemble du spectre des entreprises : optimisation, transformation et consultance stratégique.",
+    "tags": ["Expertise 30+ ans", "Vision 360°"]
+  },
+  "section2": {
+    "heading": "Nos Engagements",
+    "points": [
+      {
+        "title": "Approche sur mesure",
+        "description": "Chaque solution est adaptée à vos objectifs, vos ressources et votre réalité d'affaires."
+      },
+      {
+        "title": "Résultats concrets",
+        "description": "Nos recommandations sont toujours orientées vers des gains mesurables et durables."
+      },
+      {
+        "title": "Innovation continue",
+        "description": "Nous intégrons les meilleures pratiques et technologies pour garder vos solutions à jour."
+      },
+      {
+        "title": "Accompagnement humain",
+        "description": "Un partenariat basé sur la transparence, la confiance et une communication claire."
+      },
+      {
+        "title": "Sécurité et conformité",
+        "description": "Vos données et vos outils sont protégés selon les normes les plus strictes (Loi 25, RGPD)."
+      },
+      {
+        "title": "Soutien durable",
+        "description": "Nous restons présents après la mise en place pour assurer suivi, évolution et pérennité."
+      }
+    ]
+  },
+  "section3": {
+    "heading": "Excellence & Agilité",
+    "quote": "Nous ne sommes pas seulement des consultants ou des développeurs. Nous sommes les architectes de votre croissance, alliant technologie et stratégie pour des résultats durables."
+  }
+}

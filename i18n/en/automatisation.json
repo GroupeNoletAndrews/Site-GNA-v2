@@ -1,0 +1,32 @@
+{
+  "title": "Operational Efficiency",
+  "subtitle": "Workflows & AI",
+  "description": "Intelligent automation of your processes.",
+  "intro": {
+    "heading": "Operational Efficiency",
+    "description": "Automation is a powerful lever for increasing efficiency and freeing up valuable time within businesses. We support you in integrating digital solutions that simplify your processes, reduce errors and increase your teams' productivity.",
+    "tags": ["Productivity", "Intelligence"]
+  },
+  "section2": {
+    "heading": "Our Interventions",
+    "point1": {
+      "number": "01",
+      "title": "Repetitive processes",
+      "description": "We identify low-value-added tasks and implement solutions to execute them automatically."
+    },
+    "point2": {
+      "number": "02",
+      "title": "Collaborative tools",
+      "description": "We deploy modern platforms (CRM, management tools, collaborative solutions) to centralize information and improve internal communication."
+    },
+    "point3": {
+      "number": "03",
+      "title": "Workflows",
+      "description": "We analyze your current methods to design smoother, faster workflows better suited to your business objectives."
+    }
+  },
+  "section3": {
+    "heading": "Unlock your potential",
+    "quote": "Automating and optimizing your processes means giving your teams more time to focus on what really matters: innovation, growth and customer satisfaction."
+  }
+}

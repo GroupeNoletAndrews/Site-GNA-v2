@@ -1,0 +1,54 @@
+{
+  "title": "Our Team",
+  "subtitle": "Talents & achievements",
+  "description": "Passionate experts.",
+  "intro": {
+    "heading": "Our Team",
+    "description1": "The passionate experts who drive your success.",
+    "description2": "Behind every innovative solution lies a dedicated team. Discover the faces of those who transform your ambitions into reality.",
+    "tags": ["Passion", "Expertise"]
+  },
+  "leadership": {
+    "heading": "Leadership",
+    "members": [
+      {
+        "name": "Édouard Nolet",
+        "role": "Co-founder, CEO"
+      },
+      {
+        "name": "Philippe Andrews",
+        "role": "Co-founder, General Management"
+      }
+    ]
+  },
+  "experts": {
+    "heading": "Technical Experts",
+    "members": [
+      {
+        "name": "Jean-Chérif Ayanou",
+        "role": "Technical Director, Lead Developer"
+      },
+      {
+        "name": "Étienne Arsenault",
+        "role": "Lead Security Dev, UI/UX Expert"
+      },
+      {
+        "name": "Karine Boucher",
+        "role": "Consultant and Management Expert"
+      }
+    ]
+  },
+  "portfolio": {
+    "heading": "Recent Portfolio",
+    "projects": [
+      {
+        "category": "Finance & Tech",
+        "title": "Fintech Platform"
+      },
+      {
+        "category": "Real Estate",
+        "title": "360 Real Estate Management"
+      }
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "title": "Performance & Modernity",
+  "subtitle": "SEO & performance",
+  "description": "Complete web modernization and optimization.",
+  "intro": {
+    "heading": "Performance & Modernity",
+    "description": "Optimizing and modernizing your web presence are essential pillars for ensuring the performance, credibility and competitiveness of your business online. Our approach combines technical analysis, design, user experience (UX) and search engine optimization (SEO) to maximize your digital results.",
+    "tags": ["UX/UI Design", "Technical SEO"]
+  },
+  "section2": {
+    "heading": "Our Approach",
+    "point1": {
+      "number": "01",
+      "title": "Design & Performance",
+      "description": "A well-designed and contemporary website reflects your company's image. We rethink the interface to make it attractive and aligned with your identity, while ensuring optimal loading speed."
+    },
+    "point2": {
+      "number": "02",
+      "title": "UX & Mobile",
+      "description": "We rethink navigation for a simple and intuitive experience. Your site will be perfectly responsive and accessible on all devices, from phone to computer."
+    },
+    "point3": {
+      "number": "03",
+      "title": "SEO & Security",
+      "description": "Code and content optimization for search engines. Infrastructure and security protocol updates for total reliability."
+    }
+  },
+  "section3": {
+    "heading": "Performance & Conversion",
+    "quote": "Transforming your site into a modern performance tool that attracts, engages and converts: that's our goal."
+  }
+}

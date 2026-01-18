@@ -1,0 +1,31 @@
+{
+  "title": "Support Financier & Subventions",
+  "subtitle": "& subventions",
+  "description": "Crédits R&D, CDAE.",
+  "intro": {
+    "heading": "Support Financier & Subventions",
+    "description": "Bien que Groupe Nolet & Andrews n'offre pas de financement direct, nous accompagnons les entreprises dans l'analyse financière complète de leurs projets afin d'identifier les programmes de financement et de subventions disponibles au Québec et au Canada.",
+    "tags": ["Analyse", "Accompagnement"]
+  },
+  "section2": {
+    "heading": "Une Approche Éclairée",
+    "point1": {
+      "number": "01",
+      "title": "Analyse de projet",
+      "description": "Nous évaluons la structure de votre entreprise, la viabilité de votre projet et son alignement avec les critères des programmes existants."
+    },
+    "point2": {
+      "number": "02",
+      "title": "Éligibilité & stratégie",
+      "description": "Nous identifions les subventions, crédits ou programmes pertinents et bâtissons une stratégie réaliste pour maximiser vos chances d'acceptation."
+    },
+    "card": {
+      "title": "Gestion des démarches",
+      "description": "Nous pouvons prendre en charge la préparation, la complétion et la transmission des demandes et formulaires requis, afin de vous faire gagner du temps et réduire les risques d'erreurs."
+    }
+  },
+  "section3": {
+    "heading": "Impact Durable",
+    "quote": "Un bon accompagnement financier, c'est transformer un projet solide en opportunité concrète, tout en naviguant efficacement dans les programmes disponibles."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "title": "Human Capital",
+  "subtitle": "Coaching",
+  "description": "Training and skills development.",
+  "intro": {
+    "heading": "Human Capital",
+    "description": "A company's success depends as much on technology as on the strength of its teams. At Groupe Nolet & Andrews, we offer training programs and adapted support that strengthen the skills of your employees and managers. Whether it's management, operations or digital tools, we're here to guide you.",
+    "tags": ["Skills", "Autonomy"]
+  },
+  "section2": {
+    "heading": "Our Pedagogy",
+    "point1": {
+      "number": "01",
+      "title": "Specialized training",
+      "description": "Content adapted to your sector and real needs, to maximize impact and learning retention."
+    },
+    "point2": {
+      "number": "02",
+      "title": "Practical workshops",
+      "description": "We favor interactive sessions that prioritize action and allow participants to immediately apply their new knowledge."
+    },
+    "point3": {
+      "number": "03",
+      "title": "Ongoing support",
+      "description": "We remain available to provide lasting support, beyond training, to ensure autonomy, confidence and performance of your teams."
+    }
+  },
+  "section3": {
+    "heading": "Knowledge & Performance",
+    "quote": "Training and supporting your teams means giving them the human and digital tools to adapt, evolve and transform technology into a real performance driver."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "title": "Contact Us",
+  "subtitle": "Discussion & quote",
+  "description": "Launch your project.",
+  "intro": {
+    "heading": "Contact Us",
+    "description": "Ready to start a project or just want to chat? We're here for you."
+  },
+  "form": {
+    "heading": "Send us a message",
+    "fields": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "phone": "Phone",
+      "email": "Email",
+      "message": "Message"
+    },
+    "placeholders": {
+      "firstName": "Your first name",
+      "lastName": "Your last name",
+      "phone": "Your phone number",
+      "email": "Your email",
+      "message": "Tell us about your project..."
+    },
+    "submit": "Send message"
+  },
+  "chat": {
+    "heading": "Need a quick answer?",
+    "description": "Use our interactive chat to talk directly with an available team member.",
+    "button": "Start Chat"
+  }
+}

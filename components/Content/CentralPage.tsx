@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { GRID_ITEMS } from '../../constants';
 import TileContent from './TileContent';
 import { X } from 'lucide-react';
+import { useI18n } from '../../contexts/I18nContext';
 
 interface CentralPageProps {
   activeId: string | null;
@@ -11,7 +12,28 @@ interface CentralPageProps {
 }
 
 const CentralPage: React.FC<CentralPageProps> = ({ activeId, onClose, isPortrait = false }) => {
+  const { t } = useI18n();
   const activeItem = GRID_ITEMS.find(item => item.id === activeId);
+  
+  // Helper function to get translated text for item properties
+  const getTranslatedItem = (item: typeof activeItem) => {
+    if (!item) return { title: '', subtitle: '' };
+    
+    const tileKey = item.id;
+    const translatedTitleKey = `${tileKey}.title`;
+    const translatedTitleValue = t(translatedTitleKey);
+    const translatedTitle = translatedTitleValue !== translatedTitleKey ? translatedTitleValue : item.title;
+    
+    const translatedSubtitle = item.subtitle ? (() => {
+      const key = `${tileKey}.subtitle`;
+      const value = t(key);
+      return value !== key ? value : item.subtitle;
+    })() : item.subtitle;
+    
+    return { title: translatedTitle, subtitle: translatedSubtitle };
+  };
+  
+  const translatedItem = activeItem ? getTranslatedItem(activeItem) : { title: '', subtitle: '' };
 
   // Définition des IDs qui se trouvent visuellement à GAUCHE dans le layout 'Active'
   // (Maintenant dans la colonne 2)
@@ -117,12 +139,12 @@ const CentralPage: React.FC<CentralPageProps> = ({ activeId, onClose, isPortrait
                   
                   <div>
                     <motion.h2 layoutId={`title-${activeItem.id}`} className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-normal mb-1 tracking-tight truncate">
-                      {activeItem.title}
+                      {translatedItem.title}
                     </motion.h2>
                     
                     {activeItem.subtitle && (
                       <motion.p layoutId={`sub-${activeItem.id}`} className="text-xs md:text-sm xl:text-base opacity-70 uppercase tracking-widest font-light">
-                        {activeItem.subtitle}
+                        {translatedItem.subtitle}
                       </motion.p>
                     )}
                   </div>
