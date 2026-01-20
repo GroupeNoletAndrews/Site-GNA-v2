@@ -1005,7 +1005,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                       <h3 className="font-normal text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl leading-tight tracking-tight">
                         {translatedItem.title}
                       </h3>
-                      {translatedItem.subtitle && (
+                      {windowHeight >= 450 && (
                         <p className="text-[9px] md:text-[10px] lg:text-xs xl:text-sm font-normal tracking-wide opacity-70">
                           {translatedItem.subtitle}
                         </p>
@@ -1013,7 +1013,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                     </div>
                   </div>
 
-                  {windowHeight >= 1000 && (
+                  {windowHeight >= 780 && (
                     <p className="mt-2 text-[10px] md:text-xs lg:text-sm xl:text-base opacity-80 line-clamp-2 leading-tight md:leading-relaxed font-light">
                       {translatedItem.description}
                     </p>
