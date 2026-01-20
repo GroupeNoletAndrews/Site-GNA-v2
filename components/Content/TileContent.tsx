@@ -9,6 +9,15 @@ interface TileContentProps {
   isPortraitFlow?: boolean; // NEW: Vertical Desktop Flow rendering
 }
 
+interface ResponsiveClasses {
+  heading: string;
+  subheading: string;
+  body: string;
+  padding: string;
+  margin: string;
+  gap: string;
+}
+
 interface StyleConfig {
   isDark: boolean;
   text: string;
@@ -17,7 +26,67 @@ interface StyleConfig {
   cardAlt: string;
   accentBg: string;
   button: string;
+  responsive: ResponsiveClasses;
 }
+
+// --- HOOK POUR DÉTECTER LA HAUTEUR DE L'ÉCRAN ---
+const useViewportHeight = () => {
+  const [vh, setVh] = useState(window.innerHeight);
+
+  useEffect(() => {
+    const updateVh = () => setVh(window.innerHeight);
+    window.addEventListener('resize', updateVh);
+    return () => window.removeEventListener('resize', updateVh);
+  }, []);
+
+  return vh;
+};
+
+// --- FONCTION POUR GÉNÉRER DES CLASSES ADAPTATIVES SELON LA HAUTEUR ---
+const getResponsiveClasses = (vh: number) => {
+  // Pour les très petits écrans (hauteur < 600px)
+  if (vh < 600) {
+    return {
+      heading: 'text-xl md:text-2xl lg:text-3xl xl:text-4xl',
+      subheading: 'text-lg md:text-xl lg:text-2xl xl:text-3xl',
+      body: 'text-sm md:text-base lg:text-lg',
+      padding: 'p-4 md:p-6 xl:p-8',
+      margin: 'mb-3 md:mb-4',
+      gap: 'gap-4 md:gap-6',
+    };
+  }
+  // Pour les petits écrans (600px - 800px)
+  if (vh < 800) {
+    return {
+      heading: 'text-2xl md:text-3xl lg:text-4xl xl:text-5xl',
+      subheading: 'text-xl md:text-2xl lg:text-3xl xl:text-4xl',
+      body: 'text-base md:text-lg lg:text-xl',
+      padding: 'p-6 md:p-8 xl:p-10',
+      margin: 'mb-4 md:mb-6',
+      gap: 'gap-4 md:gap-6 xl:gap-8',
+    };
+  }
+  // Pour les écrans moyens (800px - 1000px)
+  if (vh < 1000) {
+    return {
+      heading: 'text-3xl md:text-4xl lg:text-5xl xl:text-6xl',
+      subheading: 'text-2xl md:text-3xl lg:text-4xl xl:text-5xl',
+      body: 'text-lg md:text-xl lg:text-2xl',
+      padding: 'p-8 md:p-10 xl:p-12',
+      margin: 'mb-5 md:mb-8',
+      gap: 'gap-6 md:gap-8 xl:gap-10',
+    };
+  }
+  // Pour les grands écrans (>= 1000px) - taille par défaut
+  return {
+    heading: 'text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl',
+    subheading: 'text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl',
+    body: 'text-base md:text-xl lg:text-2xl 2xl:text-3xl',
+    padding: 'p-8 md:px-12 md:py-10 xl:px-20 xl:py-16 2xl:px-24 2xl:py-20',
+    margin: 'mb-4 md:mb-6 2xl:mb-10',
+    gap: 'gap-6 md:gap-8 xl:gap-12',
+  };
+};
 
 // --- LOGIQUE DE GESTION DU SCROLL (DESKTOP LANDSCAPE) ---
 interface ScrollableContainerProps {
@@ -31,6 +100,8 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({ sections, the
   const [isScrolling, setIsScrolling] = useState(false);
   const touchStartY = useRef<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const vh = useViewportHeight();
+  const responsiveClasses = getResponsiveClasses(vh);
 
   const handleScroll = (direction: 'up' | 'down') => {
     if (isScrolling) return;
@@ -52,6 +123,26 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({ sections, the
     if (!container) return;
 
     const onWheel = (e: WheelEvent) => {
+      // Get the active section container (the one being scrolled)
+      const activeSectionContainer = container.querySelector(`[data-section-index="${currentIndex}"]`) as HTMLElement;
+      
+      if (activeSectionContainer) {
+        const { scrollTop, scrollHeight, clientHeight } = activeSectionContainer;
+        const isAtTop = scrollTop === 0;
+        const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1;
+        
+        // Allow scroll within section if not at boundaries
+        if (e.deltaY > 0 && !isAtBottom) {
+          // Scrolling down but not at bottom - allow internal scroll
+          return;
+        }
+        if (e.deltaY < 0 && !isAtTop) {
+          // Scrolling up but not at top - allow internal scroll
+          return;
+        }
+      }
+      
+      // Prevent default and handle section change only if at boundaries
       e.preventDefault(); 
       if (Math.abs(e.deltaY) > 20) {
         handleScroll(e.deltaY > 0 ? 'down' : 'up');
@@ -102,8 +193,14 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({ sections, the
         transition={{ type: "spring", stiffness: 50, damping: 15, mass: 1 }}
       >
         {sections.map((section, idx) => (
-          <div key={idx} className="w-full h-full flex flex-col p-8 md:px-12 md:py-10 xl:px-20 xl:py-16 2xl:px-24 2xl:py-20 overflow-hidden relative justify-center">
+          <div 
+            key={idx} 
+            data-section-index={idx}
+            className={`w-full h-full flex flex-col ${responsiveClasses.padding} overflow-y-auto relative min-h-0`}
+          >
+            <div className="flex flex-col justify-center min-h-full pb-48 md:pb-56 lg:pb-64 xl:pb-72 2xl:pb-80">
              {section}
+            </div>
           </div>
         ))}
       </motion.div>
@@ -158,43 +255,45 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({ sections, the
 
 // --- CONTENU SPÉCIFIQUE (DÉCOUPÉ EN SECTIONS & ADAPTATIF) ---
 
-const DevSolutionsSections = (s: StyleConfig, t: (key: string) => any) => [
+const DevSolutionsSections = (s: StyleConfig, t: (key: string) => any) => {
+  const r = s.responsive;
+  return [
   // SECTION 1: INTRO
-  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('dev-solutions.intro.heading')}</h3>
-    <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
+  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl" key="intro">
+    <h3 className={`${r.heading} font-normal ${r.margin} ${s.text}`}>{t('dev-solutions.intro.heading')}</h3>
+    <p className={`${r.body} leading-relaxed font-light ${s.subtext}`}>
       {t('dev-solutions.intro.description')}
     </p>
-    <div className="mt-8 md:mt-12 flex gap-4">
+    <div className={`mt-4 md:mt-6 xl:mt-8 flex ${r.gap}`}>
         {(t('dev-solutions.intro.tags') as string[] || []).map((tag, i) => (
-          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+          <div key={i} className={`px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-normal ${r.body} ${s.card}`}>{tag}</div>
         ))}
     </div>
   </div>,
 
   // SECTION 2: POINTS CLÉS
-  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('dev-solutions.section2.heading')}</h3>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 xl:gap-12">
-       <div className="space-y-6 xl:space-y-10">
-          <div className="flex items-start gap-4 xl:gap-6">
-              <div className={`w-10 h-10 md:w-12 md:h-12 xl:w-16 xl:h-16 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} text-base xl:text-xl`}>01</div>
+  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl" key="points">
+    <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t('dev-solutions.section2.heading')}</h3>
+    <div className={`grid grid-cols-1 md:grid-cols-2 ${r.gap}`}>
+       <div className={`space-y-4 md:space-y-6 xl:space-y-8`}>
+          <div className={`flex items-start ${r.gap}`}>
+              <div className={`w-8 h-8 md:w-10 md:h-10 xl:w-12 xl:h-12 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} ${r.body}`}>01</div>
               <div>
-                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>{t('dev-solutions.section2.point1.title')}</h4>
-                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>{t('dev-solutions.section2.point1.description')}</p>
+                  <h4 className={`font-normal ${r.body} ${s.text}`}>{t('dev-solutions.section2.point1.title')}</h4>
+                  <p className={`font-light ${r.body} ${s.subtext}`}>{t('dev-solutions.section2.point1.description')}</p>
               </div>
           </div>
-          <div className="flex items-start gap-4 xl:gap-6">
-              <div className={`w-10 h-10 md:w-12 md:h-12 xl:w-16 xl:h-16 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} text-base xl:text-xl`}>02</div>
+          <div className={`flex items-start ${r.gap}`}>
+              <div className={`w-8 h-8 md:w-10 md:h-10 xl:w-12 xl:h-12 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} ${r.body}`}>02</div>
               <div>
-                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>{t('dev-solutions.section2.point2.title')}</h4>
-                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>{t('dev-solutions.section2.point2.description')}</p>
+                  <h4 className={`font-normal ${r.body} ${s.text}`}>{t('dev-solutions.section2.point2.title')}</h4>
+                  <p className={`font-light ${r.body} ${s.subtext}`}>{t('dev-solutions.section2.point2.description')}</p>
               </div>
           </div>
        </div>
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col justify-center`}>
-          <h4 className={`font-normal mb-4 text-base md:text-lg xl:text-2xl ${s.text}`}>{t('dev-solutions.section2.card.title')}</h4>
-          <p className={`font-light text-sm md:text-base xl:text-lg leading-relaxed ${s.subtext}`}>
+       <div className={`p-4 md:p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col justify-center`}>
+          <h4 className={`font-normal ${r.margin} ${r.body} ${s.text}`}>{t('dev-solutions.section2.card.title')}</h4>
+          <p className={`font-light ${r.body} leading-relaxed ${s.subtext}`}>
               {t('dev-solutions.section2.card.description')}
           </p>
        </div>
@@ -202,56 +301,59 @@ const DevSolutionsSections = (s: StyleConfig, t: (key: string) => any) => [
   </div>,
 
   // SECTION 3: CONCLUSION
-  <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('dev-solutions.section3.heading')}</h3>
-      <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
-         <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
-         <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
+  <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto" key="conclusion">
+      <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t('dev-solutions.section3.heading')}</h3>
+      <div className={`p-6 md:p-8 xl:p-10 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
+         <span className={`absolute top-2 left-4 ${r.heading} opacity-10 font-serif`}>"</span>
+         <p className={`${r.body} font-light leading-relaxed relative z-10 ${s.text}`}>
            {t('dev-solutions.section3.quote')}
          </p>
       </div>
   </div>
-];
+  ];
+};
 
-const OptimisationSections = (s: StyleConfig, t: (key: string) => any) => [
+const OptimisationSections = (s: StyleConfig, t: (key: string) => any) => {
+  const r = s.responsive;
+  return [
   // SECTION 1: INTRO
-  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('optimisation.intro.heading')}</h3>
-    <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
+  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl" key="intro">
+    <h3 className={`${r.heading} font-normal ${r.margin} ${s.text}`}>{t('optimisation.intro.heading')}</h3>
+    <p className={`${r.body} leading-relaxed font-light ${s.subtext}`}>
       {t('optimisation.intro.description')}
     </p>
-    <div className="mt-8 md:mt-12 flex gap-4">
+    <div className={`mt-4 md:mt-6 xl:mt-8 flex ${r.gap}`}>
         {(t('optimisation.intro.tags') as string[] || []).map((tag, i) => (
-          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+          <div key={i} className={`px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-normal ${r.body} ${s.card}`}>{tag}</div>
         ))}
     </div>
   </div>,
 
   // SECTION 2: POINTS CLÉS
-  <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-7xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('optimisation.section2.heading')}</h3>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 xl:gap-8">
+  <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-7xl" key="points">
+    <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t('optimisation.section2.heading')}</h3>
+    <div className={`grid grid-cols-1 md:grid-cols-3 ${r.gap}`}>
        {/* Point 1 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>01</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('optimisation.section2.point1.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
+       <div className={`${r.padding} rounded-2xl ${s.card} flex flex-col`}>
+          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-normal ${r.margin} shrink-0 ${s.accentBg} ${r.body}`}>01</div>
+          <h4 className={`font-normal ${r.body} ${r.margin} ${s.text}`}>{t('optimisation.section2.point1.title')}</h4>
+          <p className={`font-light ${r.body} leading-relaxed ${s.subtext}`}>
             {t('optimisation.section2.point1.description')}
           </p>
        </div>
        {/* Point 2 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>02</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('optimisation.section2.point2.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
+       <div className={`${r.padding} rounded-2xl ${s.card} flex flex-col`}>
+          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-normal ${r.margin} shrink-0 ${s.accentBg} ${r.body}`}>02</div>
+          <h4 className={`font-normal ${r.body} ${r.margin} ${s.text}`}>{t('optimisation.section2.point2.title')}</h4>
+          <p className={`font-light ${r.body} leading-relaxed ${s.subtext}`}>
             {t('optimisation.section2.point2.description')}
           </p>
        </div>
        {/* Point 3 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>03</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('optimisation.section2.point3.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
+       <div className={`${r.padding} rounded-2xl ${s.card} flex flex-col`}>
+          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-normal ${r.margin} shrink-0 ${s.accentBg} ${r.body}`}>03</div>
+          <h4 className={`font-normal ${r.body} ${r.margin} ${s.text}`}>{t('optimisation.section2.point3.title')}</h4>
+          <p className={`font-light ${r.body} leading-relaxed ${s.subtext}`}>
             {t('optimisation.section2.point3.description')}
           </p>
        </div>
@@ -259,56 +361,56 @@ const OptimisationSections = (s: StyleConfig, t: (key: string) => any) => [
   </div>,
 
   // SECTION 3: CONCLUSION
-  <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('optimisation.section3.heading')}</h3>
-      <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
-         <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
-         <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
+  <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto" key="conclusion">
+      <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t('optimisation.section3.heading')}</h3>
+      <div className={`p-6 md:p-8 xl:p-10 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
+         <span className={`absolute top-2 left-4 ${r.heading} opacity-10 font-serif`}>"</span>
+         <p className={`${r.body} font-light leading-relaxed relative z-10 ${s.text}`}>
            {t('optimisation.section3.quote')}
          </p>
       </div>
   </div>
-];
+  ];
+};
 
-const AutomatisationSections = (s: StyleConfig, t: (key: string) => any) => [
+const AutomatisationSections = (s: StyleConfig, t: (key: string) => any) => {
+  const r = s.responsive;
+  return [
   // SECTION 1: INTRO
-  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('automatisation.intro.heading')}</h3>
-    <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
+  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl" key="intro">
+    <h3 className={`${r.heading} font-normal ${r.margin} ${s.text}`}>{t('automatisation.intro.heading')}</h3>
+    <p className={`${r.body} leading-relaxed font-light ${s.subtext}`}>
       {t('automatisation.intro.description')}
     </p>
-    <div className="mt-8 md:mt-12 flex gap-4">
+    <div className={`mt-4 md:mt-6 xl:mt-8 flex ${r.gap}`}>
         {(t('automatisation.intro.tags') as string[] || []).map((tag, i) => (
-          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+          <div key={i} className={`px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-normal ${r.body} ${s.card}`}>{tag}</div>
         ))}
     </div>
   </div>,
 
   // SECTION 2: POINTS CLÉS
-  <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-7xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('automatisation.section2.heading')}</h3>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 xl:gap-8">
-       {/* Point 1 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>01</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('automatisation.section2.point1.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
+  <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-7xl" key="points">
+    <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t('automatisation.section2.heading')}</h3>
+    <div className={`grid grid-cols-1 md:grid-cols-3 ${r.gap}`}>
+       <div className={`${r.padding} rounded-2xl ${s.card} flex flex-col`}>
+          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-normal ${r.margin} shrink-0 ${s.accentBg} ${r.body}`}>01</div>
+          <h4 className={`font-normal ${r.body} ${r.margin} ${s.text}`}>{t('automatisation.section2.point1.title')}</h4>
+          <p className={`font-light ${r.body} leading-relaxed ${s.subtext}`}>
             {t('automatisation.section2.point1.description')}
           </p>
        </div>
-       {/* Point 2 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>02</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('automatisation.section2.point2.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
+       <div className={`${r.padding} rounded-2xl ${s.card} flex flex-col`}>
+          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-normal ${r.margin} shrink-0 ${s.accentBg} ${r.body}`}>02</div>
+          <h4 className={`font-normal ${r.body} ${r.margin} ${s.text}`}>{t('automatisation.section2.point2.title')}</h4>
+          <p className={`font-light ${r.body} leading-relaxed ${s.subtext}`}>
             {t('automatisation.section2.point2.description')}
           </p>
        </div>
-       {/* Point 3 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>03</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('automatisation.section2.point3.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
+       <div className={`${r.padding} rounded-2xl ${s.card} flex flex-col`}>
+          <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-normal ${r.margin} shrink-0 ${s.accentBg} ${r.body}`}>03</div>
+          <h4 className={`font-normal ${r.body} ${r.margin} ${s.text}`}>{t('automatisation.section2.point3.title')}</h4>
+          <p className={`font-light ${r.body} leading-relaxed ${s.subtext}`}>
             {t('automatisation.section2.point3.description')}
           </p>
        </div>
@@ -316,340 +418,171 @@ const AutomatisationSections = (s: StyleConfig, t: (key: string) => any) => [
   </div>,
 
   // SECTION 3: CONCLUSION
-  <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('automatisation.section3.heading')}</h3>
-      <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
-         <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
-         <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
+  <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto" key="conclusion">
+      <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t('automatisation.section3.heading')}</h3>
+      <div className={`p-6 md:p-8 xl:p-10 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
+         <span className={`absolute top-2 left-4 ${r.heading} opacity-10 font-serif`}>"</span>
+         <p className={`${r.body} font-light leading-relaxed relative z-10 ${s.text}`}>
            {t('automatisation.section3.quote')}
          </p>
       </div>
   </div>
-];
+  ];
+};
 
-const ConseilSections = (s: StyleConfig, t: (key: string) => any) => [
-  // SECTION 1: INTRO
-  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('conseil.intro.heading')}</h3>
-    <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-      {t('conseil.intro.description')}
-    </p>
-    <div className="mt-8 md:mt-12 flex gap-4">
-        {(t('conseil.intro.tags') as string[] || []).map((tag, i) => (
-          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
-        ))}
-    </div>
-  </div>,
-
-  // SECTION 2: POINTS CLÉS
-  <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-7xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('conseil.section2.heading')}</h3>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 xl:gap-8">
-       {/* Point 1 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>01</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('conseil.section2.point1.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            {t('conseil.section2.point1.description')}
-          </p>
-       </div>
-       {/* Point 2 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>02</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('conseil.section2.point2.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            {t('conseil.section2.point2.description')}
-          </p>
-       </div>
-       {/* Point 3 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>03</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('conseil.section2.point3.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            {t('conseil.section2.point3.description')}
-          </p>
-       </div>
-    </div>
-  </div>,
-
-  // SECTION 3: CONCLUSION
-  <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('conseil.section3.heading')}</h3>
-      <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
-         <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
-         <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
-           {t('conseil.section3.quote')}
-         </p>
+// Helper function for sections with 3 points layout
+const createThreePointsSections = (s: StyleConfig, t: (key: string) => any, sectionKey: string) => {
+  const r = s.responsive;
+  return [
+    // SECTION 1: INTRO
+    <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl" key="intro">
+      <h3 className={`${r.heading} font-normal ${r.margin} ${s.text}`}>{t(`${sectionKey}.intro.heading`)}</h3>
+      <p className={`${r.body} leading-relaxed font-light ${s.subtext}`}>
+        {t(`${sectionKey}.intro.description`)}
+      </p>
+      <div className={`mt-4 md:mt-6 xl:mt-8 flex ${r.gap}`}>
+          {(t(`${sectionKey}.intro.tags`) as string[] || []).map((tag, i) => (
+            <div key={i} className={`px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-normal ${r.body} ${s.card}`}>{tag}</div>
+          ))}
       </div>
-  </div>
-];
+    </div>,
 
-const DataAnalysisSections = (s: StyleConfig, t: (key: string) => any) => [
-  // SECTION 1: INTRO
-  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('data-analysis.intro.heading')}</h3>
-    <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-      {t('data-analysis.intro.description')}
-    </p>
-    <div className="mt-8 md:mt-12 flex gap-4">
-        {(t('data-analysis.intro.tags') as string[] || []).map((tag, i) => (
-          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
-        ))}
-    </div>
-  </div>,
-
-  // SECTION 2: POINTS CLÉS
-  <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-7xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('data-analysis.section2.heading')}</h3>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 xl:gap-8">
-       {/* Point 1 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>01</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('data-analysis.section2.point1.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            {t('data-analysis.section2.point1.description')}
-          </p>
-       </div>
-       {/* Point 2 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>02</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('data-analysis.section2.point2.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            {t('data-analysis.section2.point2.description')}
-          </p>
-       </div>
-       {/* Point 3 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>03</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('data-analysis.section2.point3.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            {t('data-analysis.section2.point3.description')}
-          </p>
-       </div>
-    </div>
-  </div>,
-
-  // SECTION 3: CONCLUSION
-  <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('data-analysis.section3.heading')}</h3>
-      <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
-         <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
-         <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
-           {t('data-analysis.section3.quote')}
-         </p>
+    // SECTION 2: POINTS CLÉS
+    <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-7xl" key="points">
+      <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t(`${sectionKey}.section2.heading`)}</h3>
+      <div className={`grid grid-cols-1 md:grid-cols-3 ${r.gap}`}>
+         {[1, 2, 3].map((num) => (
+           <div key={num} className={`${r.padding} rounded-2xl ${s.card} flex flex-col`}>
+              <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-normal ${r.margin} shrink-0 ${s.accentBg} ${r.body}`}>0{num}</div>
+              <h4 className={`font-normal ${r.body} ${r.margin} ${s.text}`}>{t(`${sectionKey}.section2.point${num}.title`)}</h4>
+              <p className={`font-light ${r.body} leading-relaxed ${s.subtext}`}>
+                {t(`${sectionKey}.section2.point${num}.description`)}
+              </p>
+           </div>
+         ))}
       </div>
-  </div>
-];
+    </div>,
 
-const FormationSections = (s: StyleConfig, t: (key: string) => any) => [
-  // SECTION 1: INTRO
-  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('formation.intro.heading')}</h3>
-    <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-      {t('formation.intro.description')}
-    </p>
-    <div className="mt-8 md:mt-12 flex gap-4">
-        {(t('formation.intro.tags') as string[] || []).map((tag, i) => (
-          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
-        ))}
+    // SECTION 3: CONCLUSION
+    <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto" key="conclusion">
+        <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t(`${sectionKey}.section3.heading`)}</h3>
+        <div className={`p-6 md:p-8 xl:p-10 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
+           <span className={`absolute top-2 left-4 ${r.heading} opacity-10 font-serif`}>"</span>
+           <p className={`${r.body} font-light leading-relaxed relative z-10 ${s.text}`}>
+             {t(`${sectionKey}.section3.quote`)}
+           </p>
+        </div>
     </div>
-  </div>,
+  ];
+};
 
-  // SECTION 2: POINTS CLÉS
-  <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-7xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('formation.section2.heading')}</h3>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 xl:gap-8">
-       {/* Point 1 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>01</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('formation.section2.point1.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            {t('formation.section2.point1.description')}
-          </p>
-       </div>
-       {/* Point 2 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>02</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('formation.section2.point2.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            {t('formation.section2.point2.description')}
-          </p>
-       </div>
-       {/* Point 3 */}
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col`}>
-          <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-normal mb-4 shrink-0 ${s.accentBg} text-base`}>03</div>
-          <h4 className={`font-normal text-lg xl:text-2xl mb-3 ${s.text}`}>{t('formation.section2.point3.title')}</h4>
-          <p className={`font-light text-sm md:text-base leading-relaxed ${s.subtext}`}>
-            {t('formation.section2.point3.description')}
-          </p>
-       </div>
-    </div>
-  </div>,
+const ConseilSections = (s: StyleConfig, t: (key: string) => any) => createThreePointsSections(s, t, 'conseil');
+const DataAnalysisSections = (s: StyleConfig, t: (key: string) => any) => createThreePointsSections(s, t, 'data-analysis');
+const FormationSections = (s: StyleConfig, t: (key: string) => any) => createThreePointsSections(s, t, 'formation');
 
-  // SECTION 3: CONCLUSION
-  <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('formation.section3.heading')}</h3>
-      <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
-         <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
-         <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
-           {t('formation.section3.quote')}
-         </p>
+// Helper function for sections with 2 points + card layout
+const createTwoPointsCardSections = (s: StyleConfig, t: (key: string) => any, sectionKey: string) => {
+  const r = s.responsive;
+  return [
+    // SECTION 1: INTRO
+    <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl" key="intro">
+      <h3 className={`${r.heading} font-normal ${r.margin} ${s.text}`}>{t(`${sectionKey}.intro.heading`)}</h3>
+      <p className={`${r.body} leading-relaxed font-light ${s.subtext}`}>
+        {t(`${sectionKey}.intro.description`)}
+      </p>
+      <div className={`mt-4 md:mt-6 xl:mt-8 flex ${r.gap}`}>
+          {(t(`${sectionKey}.intro.tags`) as string[] || []).map((tag, i) => (
+            <div key={i} className={`px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-normal ${r.body} ${s.card}`}>{tag}</div>
+          ))}
       </div>
-  </div>
-];
+    </div>,
 
-const MaintenanceSections = (s: StyleConfig, t: (key: string) => any) => [
-  // SECTION 1: INTRO
-  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('maintenance.intro.heading')}</h3>
-    <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-      {t('maintenance.intro.description')}
-    </p>
-    <div className="mt-8 md:mt-12 flex gap-4">
-        {(t('maintenance.intro.tags') as string[] || []).map((tag, i) => (
-          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
-        ))}
-    </div>
-  </div>,
-
-  // SECTION 2: POINTS CLÉS
-  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('maintenance.section2.heading')}</h3>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 xl:gap-12">
-       <div className="space-y-6 xl:space-y-10">
-          <div className="flex items-start gap-4 xl:gap-6">
-              <div className={`w-10 h-10 md:w-12 md:h-12 xl:w-16 xl:h-16 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} text-base xl:text-xl`}>01</div>
-              <div>
-                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>{t('maintenance.section2.point1.title')}</h4>
-                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>{t('maintenance.section2.point1.description')}</p>
+    // SECTION 2: POINTS CLÉS
+    <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl" key="points">
+      <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t(`${sectionKey}.section2.heading`)}</h3>
+      <div className={`grid grid-cols-1 md:grid-cols-2 ${r.gap}`}>
+         <div className={`space-y-4 md:space-y-6`}>
+            {[1, 2].map((num) => (
+              <div key={num} className={`flex items-start ${r.gap}`}>
+                  <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} ${r.body}`}>0{num}</div>
+                  <div>
+                      <h4 className={`font-normal ${r.body} ${s.text}`}>{t(`${sectionKey}.section2.point${num}.title`)}</h4>
+                      <p className={`font-light ${r.body} ${s.subtext}`}>{t(`${sectionKey}.section2.point${num}.description`)}</p>
+                  </div>
               </div>
-          </div>
-          <div className="flex items-start gap-4 xl:gap-6">
-              <div className={`w-10 h-10 md:w-12 md:h-12 xl:w-16 xl:h-16 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} text-base xl:text-xl`}>02</div>
-              <div>
-                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>{t('maintenance.section2.point2.title')}</h4>
-                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>{t('maintenance.section2.point2.description')}</p>
-              </div>
-          </div>
-       </div>
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col justify-center`}>
-          <h4 className={`font-normal mb-4 text-base md:text-lg xl:text-2xl ${s.text}`}>{t('maintenance.section2.card.title')}</h4>
-          <p className={`font-light text-sm md:text-base xl:text-lg leading-relaxed ${s.subtext}`}>
-              {t('maintenance.section2.card.description')}
-          </p>
-       </div>
-    </div>
-  </div>,
-
-  // SECTION 3: CONCLUSION
-  <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('maintenance.section3.heading')}</h3>
-      <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
-         <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
-         <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
-           {t('maintenance.section3.quote')}
-         </p>
+            ))}
+         </div>
+         <div className={`${r.padding} rounded-2xl ${s.card} flex flex-col justify-center`}>
+            <h4 className={`font-normal ${r.margin} ${r.body} ${s.text}`}>{t(`${sectionKey}.section2.card.title`)}</h4>
+            <p className={`font-light ${r.body} leading-relaxed ${s.subtext}`}>
+                {t(`${sectionKey}.section2.card.description`)}
+            </p>
+         </div>
       </div>
-  </div>
-];
+    </div>,
 
-const FinanceSections = (s: StyleConfig, t: (key: string) => any) => [
-  // SECTION 1: INTRO
-  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('finance.intro.heading')}</h3>
-    <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
-      {t('finance.intro.description')}
-    </p>
-    <div className="mt-8 md:mt-12 flex gap-4">
-        {(t('finance.intro.tags') as string[] || []).map((tag, i) => (
-          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
-        ))}
+    // SECTION 3: CONCLUSION
+    <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto" key="conclusion">
+        <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t(`${sectionKey}.section3.heading`)}</h3>
+        <div className={`p-6 md:p-8 xl:p-10 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
+           <span className={`absolute top-2 left-4 ${r.heading} opacity-10 font-serif`}>"</span>
+           <p className={`${r.body} font-light leading-relaxed relative z-10 ${s.text}`}>
+             {t(`${sectionKey}.section3.quote`)}
+           </p>
+        </div>
     </div>
-  </div>,
+  ];
+};
 
-  // SECTION 2: POINTS CLÉS
-  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('finance.section2.heading')}</h3>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 xl:gap-12">
-       <div className="space-y-6 xl:space-y-10">
-          <div className="flex items-start gap-4 xl:gap-6">
-              <div className={`w-10 h-10 md:w-12 md:h-12 xl:w-16 xl:h-16 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} text-base xl:text-xl`}>01</div>
-              <div>
-                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>{t('finance.section2.point1.title')}</h4>
-                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>{t('finance.section2.point1.description')}</p>
-              </div>
-          </div>
-          <div className="flex items-start gap-4 xl:gap-6">
-              <div className={`w-10 h-10 md:w-12 md:h-12 xl:w-16 xl:h-16 rounded-full flex items-center justify-center font-normal shrink-0 ${s.accentBg} text-base xl:text-xl`}>02</div>
-              <div>
-                  <h4 className={`font-normal text-base md:text-lg xl:text-2xl ${s.text}`}>{t('finance.section2.point2.title')}</h4>
-                  <p className={`font-light text-sm md:text-base xl:text-lg ${s.subtext}`}>{t('finance.section2.point2.description')}</p>
-              </div>
-          </div>
-       </div>
-       <div className={`p-6 xl:p-8 rounded-2xl ${s.card} flex flex-col justify-center`}>
-          <h4 className={`font-normal mb-4 text-base md:text-lg xl:text-2xl ${s.text}`}>{t('finance.section2.card.title')}</h4>
-          <p className={`font-light text-sm md:text-base xl:text-lg leading-relaxed ${s.subtext}`}>
-              {t('finance.section2.card.description')}
-          </p>
-       </div>
-    </div>
-  </div>,
+const MaintenanceSections = (s: StyleConfig, t: (key: string) => any) => createTwoPointsCardSections(s, t, 'maintenance');
+const FinanceSections = (s: StyleConfig, t: (key: string) => any) => createTwoPointsCardSections(s, t, 'finance');
 
-  // SECTION 3: CONCLUSION
-  <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('finance.section3.heading')}</h3>
-      <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
-         <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
-         <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
-           {t('finance.section3.quote')}
-         </p>
-      </div>
-  </div>
-];
-
-const WhyUsSections = (s: StyleConfig, t: (key: string) => any) => [
+const WhyUsSections = (s: StyleConfig, t: (key: string) => any) => {
+  const r = s.responsive;
+  return [
   // SECTION 1: INTRO
-  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('why-us.intro.heading')}</h3>
-    <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
+  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl" key="intro">
+    <h3 className={`${r.heading} font-normal ${r.margin} ${s.text}`}>{t('why-us.intro.heading')}</h3>
+    <p className={`${r.body} leading-relaxed font-light ${s.subtext}`}>
       {t('why-us.intro.question')}
       <br/><br/>
       {t('why-us.intro.description')}
     </p>
-    <div className="mt-8 md:mt-12 flex gap-4">
+    <div className={`mt-4 md:mt-6 xl:mt-8 flex ${r.gap}`}>
         {(t('why-us.intro.tags') as string[] || []).map((tag, i) => (
-          <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+          <div key={i} className={`px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-normal ${r.body} ${s.card}`}>{tag}</div>
         ))}
     </div>
   </div>,
 
   // SECTION 2: POINTS CLÉS
-  <div className="h-full flex flex-col justify-center max-w-6xl 2xl:max-w-7xl">
-    <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('why-us.section2.heading')}</h3>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 xl:gap-8">
+  <div className="h-full flex flex-col justify-center max-w-6xl 2xl:max-w-7xl" key="points">
+    <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t('why-us.section2.heading')}</h3>
+    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ${r.gap}`}>
        {((t('why-us.section2.points') as any[]) || []).map((p, i) => (
-           <div key={i} className={`p-5 xl:p-6 rounded-2xl ${s.card} flex flex-col`}>
-              <h4 className={`font-normal text-base md:text-lg xl:text-xl mb-2 ${s.text}`}>{p.title}</h4>
-              <p className={`font-light text-xs md:text-sm leading-relaxed ${s.subtext}`}>{p.description}</p>
+           <div key={i} className={`p-4 md:p-5 rounded-2xl ${s.card} flex flex-col`}>
+              <h4 className={`font-normal ${r.body} mb-2 ${s.text}`}>{p.title}</h4>
+              <p className={`font-light ${r.body} leading-relaxed ${s.subtext}`}>{p.description}</p>
            </div>
        ))}
     </div>
   </div>,
 
   // SECTION 3: CONCLUSION
-  <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('why-us.section3.heading')}</h3>
-      <div className={`p-8 md:p-12 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
-         <span className="absolute top-4 left-6 text-6xl md:text-8xl opacity-10 font-serif">"</span>
-         <p className={`text-lg md:text-2xl xl:text-3xl font-light leading-relaxed relative z-10 ${s.text}`}>
+  <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto" key="conclusion">
+      <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t('why-us.section3.heading')}</h3>
+      <div className={`p-6 md:p-8 xl:p-10 rounded-3xl ${s.cardAlt} relative overflow-hidden`}>
+         <span className={`absolute top-2 left-4 ${r.heading} opacity-10 font-serif`}>"</span>
+         <p className={`${r.body} font-light leading-relaxed relative z-10 ${s.text}`}>
            {t('why-us.section3.quote')}
          </p>
       </div>
   </div>
-];
+  ];
+};
 
 const TeamSections = (s: StyleConfig, t: (key: string) => any) => {
+    const r = s.responsive;
     const leadershipData = t('team.leadership.members') as any[] || [];
     const leadership = leadershipData.map((member, idx) => ({
       name: member.name,
@@ -673,51 +606,50 @@ const TeamSections = (s: StyleConfig, t: (key: string) => any) => {
     const portfolio = t('team.portfolio.projects') as any[] || [];
 
     return [
-    <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-        <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('team.intro.heading')}</h3>
-        <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
+    <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl" key="intro">
+        <h3 className={`${r.heading} font-normal ${r.margin} ${s.text}`}>{t('team.intro.heading')}</h3>
+        <p className={`${r.body} leading-relaxed font-light ${s.subtext}`}>
         {t('team.intro.description1')}
         <br/><br/>
         {t('team.intro.description2')}
         </p>
-        <div className="mt-8 md:mt-12 flex gap-4">
+        <div className={`mt-4 md:mt-6 xl:mt-8 flex ${r.gap}`}>
             {(t('team.intro.tags') as string[] || []).map((tag, i) => (
-              <div key={i} className={`px-4 py-2 md:px-6 md:py-3 rounded-lg font-normal text-sm md:text-base xl:text-lg 2xl:text-xl ${s.card}`}>{tag}</div>
+              <div key={i} className={`px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-normal ${r.body} ${s.card}`}>{tag}</div>
             ))}
         </div>
     </div>,
 
-    <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-6xl">
-        <h3 className={`text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-normal mb-6 md:mb-8 ${s.text}`}>{t('team.leadership.heading')}</h3>
-        <div className="flex flex-col gap-6 md:gap-8">
+    <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-6xl" key="leadership">
+        <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t('team.leadership.heading')}</h3>
+        <div className={`flex flex-col ${r.gap}`}>
             {leadership.map((member, idx) => (
-                <div key={idx} className={`flex flex-col md:flex-row items-center gap-6 md:gap-8 ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
-                    <div className="w-44 h-44 md:w-52 md:h-52 xl:w-64 xl:h-64 rounded-2xl overflow-hidden shadow-lg relative group shrink-0">
+                <div key={idx} className={`flex flex-col md:flex-row items-center ${r.gap} ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
+                    <div className="w-32 h-32 md:w-40 md:h-40 xl:w-48 xl:h-48 rounded-2xl overflow-hidden shadow-lg relative group shrink-0">
                         <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0" />
                         <div className={`absolute inset-0 ${s.accentBg} opacity-20 mix-blend-overlay`} />
                     </div>
-                    {/* Text closer */}
                     <div className={`flex flex-col ${idx % 2 === 1 ? 'md:items-end md:text-right' : 'md:items-start md:text-left'} text-center md:text-left`}>
-                        <h4 className={`text-xl md:text-2xl xl:text-3xl font-normal mb-1 ${s.text}`}>{member.name}</h4>
-                        <p className={`text-sm md:text-base xl:text-lg uppercase tracking-widest font-light opacity-70 ${s.text}`}>{member.role}</p>
-                        <div className={`h-0.5 w-10 bg-current opacity-40 mt-3 md:mt-4 hidden md:block`} />
+                        <h4 className={`${r.body} font-normal mb-1 ${s.text}`}>{member.name}</h4>
+                        <p className={`${r.body} uppercase tracking-widest font-light opacity-70 ${s.text}`}>{member.role}</p>
+                        <div className={`h-0.5 w-10 bg-current opacity-40 mt-2 md:mt-3 hidden md:block`} />
                     </div>
                 </div>
             ))}
         </div>
     </div>,
 
-    <div className="h-full flex flex-col justify-center max-w-6xl 2xl:max-w-7xl">
-        <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('team.experts.heading')}</h3>
-        <div className="flex flex-col gap-8">
+    <div className="h-full flex flex-col justify-center max-w-6xl 2xl:max-w-7xl" key="experts">
+        <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t('team.experts.heading')}</h3>
+        <div className={`flex flex-col ${r.gap}`}>
             {experts.map((member, idx) => (
-                <div key={idx} className={`flex flex-col md:flex-row items-center gap-6 md:gap-12 ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
-                    <div className="w-28 h-28 md:w-36 md:h-36 xl:w-44 xl:h-44 rounded-full overflow-hidden shadow-md shrink-0 border-2 border-white/20">
+                <div key={idx} className={`flex flex-col md:flex-row items-center ${r.gap} ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
+                    <div className="w-24 h-24 md:w-28 md:h-28 xl:w-32 xl:h-32 rounded-full overflow-hidden shadow-md shrink-0 border-2 border-white/20">
                         <img src={member.img} alt={member.name} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" />
                     </div>
                     <div className={`flex flex-col ${idx % 2 === 1 ? 'md:items-end md:text-right' : 'md:items-start md:text-left'} text-center md:text-left`}>
-                        <h4 className={`text-xl md:text-2xl xl:text-3xl font-normal mb-1 ${s.text}`}>{member.name}</h4>
-                        <p className={`text-xs md:text-sm xl:text-base font-light opacity-70 uppercase tracking-wide ${s.text}`}>{member.role}</p>
+                        <h4 className={`${r.body} font-normal mb-1 ${s.text}`}>{member.name}</h4>
+                        <p className={`${r.body} font-light opacity-70 uppercase tracking-wide ${s.text}`}>{member.role}</p>
                     </div>
                 </div>
             ))}
@@ -959,31 +891,33 @@ const ContactForm: React.FC<{ styleConfig: StyleConfig; t: (key: string) => any 
   );
 };
 
-const ContactSections = (s: StyleConfig, t: (key: string) => any) => [
+const ContactSections = (s: StyleConfig, t: (key: string) => any) => {
+  const r = s.responsive;
+  return [
   // SECTION 1: Intro & Coordonnées
-  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-      <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('contact.intro.heading')}</h3>
-      <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light mb-8 md:mb-12 ${s.subtext}`}>
+  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl" key="intro">
+      <h3 className={`${r.heading} font-normal ${r.margin} ${s.text}`}>{t('contact.intro.heading')}</h3>
+      <p className={`${r.body} leading-relaxed font-light ${r.margin} ${s.subtext}`}>
         {t('contact.intro.description')}
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <a href="mailto:info@noletandrews.ca" className={`p-6 rounded-2xl ${s.card} group transition-all hover:bg-white/20 flex flex-col gap-4`}>
-           <div className={`w-12 h-12 rounded-full ${s.accentBg} flex items-center justify-center`}>
-              <Mail className="w-6 h-6" />
+      <div className={`grid grid-cols-1 md:grid-cols-2 ${r.gap}`}>
+        <a href="mailto:info@noletandrews.ca" className={`${r.padding} rounded-2xl ${s.card} group transition-all hover:bg-white/20 flex flex-col ${r.gap}`}>
+           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full ${s.accentBg} flex items-center justify-center`}>
+              <Mail className="w-5 h-5 md:w-6 md:h-6" />
            </div>
            <div>
               <p className={`text-xs uppercase tracking-widest opacity-70 mb-1`}>{t('contact.form.fields.email')}</p>
-              <p className={`text-lg md:text-xl font-medium`}>info@noletandrews.ca</p>
+              <p className={`${r.body} font-medium`}>info@noletandrews.ca</p>
            </div>
         </a>
-        <a href="tel:+15819868494" className={`p-6 rounded-2xl ${s.card} group transition-all hover:bg-white/20 flex flex-col gap-4`}>
-           <div className={`w-12 h-12 rounded-full ${s.accentBg} flex items-center justify-center`}>
-              <Phone className="w-6 h-6" />
+        <a href="tel:+15819868494" className={`${r.padding} rounded-2xl ${s.card} group transition-all hover:bg-white/20 flex flex-col ${r.gap}`}>
+           <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full ${s.accentBg} flex items-center justify-center`}>
+              <Phone className="w-5 h-5 md:w-6 md:h-6" />
            </div>
            <div>
               <p className={`text-xs uppercase tracking-widest opacity-70 mb-1`}>{t('contact.form.fields.phone')}</p>
-              <p className={`text-lg md:text-xl font-medium`}>+1 (581) 986-8494</p>
+              <p className={`${r.body} font-medium`}>+1 (581) 986-8494</p>
            </div>
         </a>
       </div>
@@ -992,12 +926,15 @@ const ContactSections = (s: StyleConfig, t: (key: string) => any) => [
   <ContactForm key="contact-form" styleConfig={s} t={t} />,
 
  
-];
+  ];
+};
 
-const GenericSections = (item: GridItem, s: StyleConfig, t: (key: string, tile?: string) => any) => [
-  <div className="h-full flex flex-col justify-center max-w-3xl 2xl:max-w-5xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl font-light mb-4 md:mb-6 ${s.text}`}>{t('common.generic.intro.heading')}</h3>
-    <p className={`text-base md:text-xl lg:text-2xl xl:text-3xl font-light leading-relaxed mb-6 md:mb-8 ${s.subtext}`}>
+const GenericSections = (item: GridItem, s: StyleConfig, t: (key: string, tile?: string) => any) => {
+  const r = s.responsive;
+  return [
+  <div className="h-full flex flex-col justify-center max-w-3xl 2xl:max-w-5xl" key="intro">
+    <h3 className={`${r.heading} font-light ${r.margin} ${s.text}`}>{t('common.generic.intro.heading')}</h3>
+    <p className={`${r.body} font-light leading-relaxed ${r.margin} ${s.subtext}`}>
       {item.description}
       <br/><br/>
       {t('common.generic.intro.description')} <span className="font-normal opacity-100">{item.title}</span>.
@@ -1005,36 +942,39 @@ const GenericSections = (item: GridItem, s: StyleConfig, t: (key: string, tile?:
     <div className={`h-1 w-20 mt-2 md:mt-4 bg-current opacity-80`} />
   </div>,
 
-  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('common.generic.section2.heading')}</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 xl:gap-12">
-        <div className={`p-6 md:p-8 xl:p-12 rounded-2xl ${s.card}`}>
-           <h4 className={`text-lg md:text-xl xl:text-2xl font-normal mb-2 md:mb-4 ${s.text}`}>{t('common.generic.section2.expertise.title')}</h4>
-           <p className={`text-sm md:text-base xl:text-lg font-light ${s.subtext}`}>{t('common.generic.section2.expertise.description')}</p>
+  <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl" key="section2">
+      <h3 className={`${r.subheading} font-normal ${r.margin} ${s.text}`}>{t('common.generic.section2.heading')}</h3>
+      <div className={`grid grid-cols-1 md:grid-cols-2 ${r.gap}`}>
+        <div className={`${r.padding} rounded-2xl ${s.card}`}>
+           <h4 className={`${r.body} font-normal ${r.margin} ${s.text}`}>{t('common.generic.section2.expertise.title')}</h4>
+           <p className={`${r.body} font-light ${s.subtext}`}>{t('common.generic.section2.expertise.description')}</p>
         </div>
-        <div className={`p-6 md:p-8 xl:p-12 rounded-2xl ${s.card}`}>
-           <h4 className={`text-lg md:text-xl xl:text-2xl font-normal mb-2 md:mb-4 ${s.text}`}>{t('common.generic.section2.innovation.title')}</h4>
-           <p className={`text-sm md:text-base xl:text-lg font-light ${s.subtext}`}>{t('common.generic.section2.innovation.description')}</p>
+        <div className={`${r.padding} rounded-2xl ${s.card}`}>
+           <h4 className={`${r.body} font-normal ${r.margin} ${s.text}`}>{t('common.generic.section2.innovation.title')}</h4>
+           <p className={`${r.body} font-light ${s.subtext}`}>{t('common.generic.section2.innovation.description')}</p>
         </div>
       </div>
   </div>,
   
-  <div className="h-full flex flex-col justify-center items-center text-center max-w-2xl 2xl:max-w-4xl mx-auto">
-      <h3 className={`text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-normal mb-4 md:mb-6 ${s.text}`}>{t('common.generic.section3.heading')}</h3>
-      <p className={`text-base md:text-lg xl:text-xl 2xl:text-2xl mb-6 md:mb-8 font-light ${s.subtext}`}>
+  <div className="h-full flex flex-col justify-center items-center text-center max-w-2xl 2xl:max-w-4xl mx-auto" key="section3">
+      <h3 className={`${r.heading} font-normal ${r.margin} ${s.text}`}>{t('common.generic.section3.heading')}</h3>
+      <p className={`${r.body} ${r.margin} font-light ${s.subtext}`}>
           {t('common.generic.section3.description')} {item.title} {t('common.generic.section3.descriptionEnd')}
       </p>
-      <button className={`px-6 py-3 md:px-8 md:py-4 xl:px-10 xl:py-5 rounded-full font-normal shadow-lg text-sm md:text-base xl:text-lg transition-transform hover:scale-105 ${s.button}`}>
+      <button className={`px-4 py-2 md:px-6 md:py-3 rounded-full font-normal shadow-lg ${r.body} transition-transform hover:scale-105 ${s.button}`}>
           {t('common.generic.section3.button')}
       </button>
   </div>
-];
+  ];
+};
 
 /**
  * TileContent Manager
  */
 const TileContent: React.FC<TileContentProps> = ({ item, isMobile = false, isPortraitFlow = false }) => {
   const { t } = useI18n();
+  const vh = useViewportHeight();
+  const responsiveClasses = getResponsiveClasses(vh);
   
   const contentVariants = {
     hidden: { opacity: 0 },
@@ -1066,6 +1006,7 @@ const TileContent: React.FC<TileContentProps> = ({ item, isMobile = false, isPor
     button: isDark 
         ? 'bg-white text-slate-900' 
         : 'bg-slate-900 text-white',
+    responsive: responsiveClasses,
   };
 
   let sections: ReactNode[] = [];
