@@ -22,7 +22,11 @@
       "email": "Your email",
       "message": "Tell us about your project..."
     },
-    "submit": "Send message"
+    "submit": "Send message",
+    "submitting": "Sending...",
+    "success": "Message sent successfully! We'll get back to you soon.",
+    "error": "An error occurred. Please try again or contact us directly.",
+    "required": "This field is required"
   },
   "chat": {
     "heading": "Need a quick answer?",

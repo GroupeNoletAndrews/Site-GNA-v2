@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef, ReactNode } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { GridItem } from '../../types';
+import { AnimatePresence, motion } from 'framer-motion';
+import { AlertCircle, ArrowRight, CheckCircle, ChevronDown, Loader2, Mail, Phone, Send } from 'lucide-react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useI18n } from '../../contexts/I18nContext';
-import { ChevronDown, ArrowRight, Mail, Phone, Send, MessageSquare } from 'lucide-react';
-
+import { GridItem } from '../../types';
 interface TileContentProps {
   item: GridItem;
   isMobile?: boolean; // Mobile accordion rendering
@@ -651,7 +650,6 @@ const WhyUsSections = (s: StyleConfig, t: (key: string) => any) => [
 ];
 
 const TeamSections = (s: StyleConfig, t: (key: string) => any) => {
-    // Leadership Team - use translations for roles, keep names as is
     const leadershipData = t('team.leadership.members') as any[] || [];
     const leadership = leadershipData.map((member, idx) => ({
       name: member.name,
@@ -661,7 +659,6 @@ const TeamSections = (s: StyleConfig, t: (key: string) => any) => {
         : "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop"
     }));
     
-    // Expert Team - use translations for roles, keep names as is
     const expertsData = t('team.experts.members') as any[] || [];
     const experts = expertsData.map((member, idx) => ({
         name: member.name,
@@ -676,7 +673,6 @@ const TeamSections = (s: StyleConfig, t: (key: string) => any) => {
     const portfolio = t('team.portfolio.projects') as any[] || [];
 
     return [
-    // SECTION 1: INTRO
     <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
         <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-normal mb-4 md:mb-6 2xl:mb-10 ${s.text}`}>{t('team.intro.heading')}</h3>
         <p className={`text-base md:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed font-light ${s.subtext}`}>
@@ -691,13 +687,11 @@ const TeamSections = (s: StyleConfig, t: (key: string) => any) => {
         </div>
     </div>,
 
-    // SECTION 2: LEADERSHIP (Alternating - Compact)
     <div className="h-full flex flex-col justify-center max-w-5xl 2xl:max-w-6xl">
         <h3 className={`text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-normal mb-6 md:mb-8 ${s.text}`}>{t('team.leadership.heading')}</h3>
         <div className="flex flex-col gap-6 md:gap-8">
             {leadership.map((member, idx) => (
                 <div key={idx} className={`flex flex-col md:flex-row items-center gap-6 md:gap-8 ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
-                    {/* Smaller Image */}
                     <div className="w-44 h-44 md:w-52 md:h-52 xl:w-64 xl:h-64 rounded-2xl overflow-hidden shadow-lg relative group shrink-0">
                         <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0" />
                         <div className={`absolute inset-0 ${s.accentBg} opacity-20 mix-blend-overlay`} />
@@ -713,7 +707,6 @@ const TeamSections = (s: StyleConfig, t: (key: string) => any) => {
         </div>
     </div>,
 
-    // SECTION 3: EXPERTS (Alternating)
     <div className="h-full flex flex-col justify-center max-w-6xl 2xl:max-w-7xl">
         <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('team.experts.heading')}</h3>
         <div className="flex flex-col gap-8">
@@ -731,7 +724,6 @@ const TeamSections = (s: StyleConfig, t: (key: string) => any) => {
         </div>
     </div>,
 
-    // SECTION 4: PORTFOLIO
     <div className="h-full flex flex-col justify-center max-w-6xl 2xl:max-w-7xl">
         <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('team.portfolio.heading')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 xl:gap-8">
@@ -751,6 +743,219 @@ const TeamSections = (s: StyleConfig, t: (key: string) => any) => {
         </div>
     </div>
     ];
+};
+
+
+const ContactForm: React.FC<{ styleConfig: StyleConfig; t: (key: string) => any }> = ({ styleConfig: s, t }) => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
+  const apiUrl = import.meta.env.API_URL || 'http://localhost:3001';
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (submitStatus !== 'idle') {
+      setSubmitStatus('idle');
+      setErrorMessage('');
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone || !formData.message) {
+      setSubmitStatus('error');
+      setErrorMessage(t('contact.form.required'));
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setSubmitStatus('error');
+      setErrorMessage(t('contact.form.error'));
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    setErrorMessage('');
+
+    try {
+      console.log('Form data:', formData);
+      const response = await fetch(`${apiUrl}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      // Vérifier si la réponse est vide ou invalide
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error('Réponse non-JSON reçue:', text);
+        throw new Error('Réponse serveur invalide');
+      }
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setSubmitStatus('success');
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          message: ''
+        });
+        setTimeout(() => {
+          setSubmitStatus('idle');
+        }, 5000);
+      } else {
+        setSubmitStatus('error');
+        setErrorMessage(data.error || t('contact.form.error'));
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi du formulaire:', error);
+      setSubmitStatus('error');
+      setErrorMessage(t('contact.form.error'));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="h-full flex flex-col justify-center max-w-4xl mx-auto w-full">
+      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-10 text-center ${s.text}`}>{t('contact.form.heading')}</h3>
+      <form onSubmit={handleSubmit} className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <label htmlFor="firstName" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.firstName')}</label>
+          <input
+            id="firstName"
+            name="firstName"
+            type="text"
+            value={formData.firstName}
+            onChange={handleChange}
+            placeholder={t('contact.form.placeholders.firstName')}
+            required
+            className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`}
+            disabled={isSubmitting}
+          />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="lastName" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.lastName')}</label>
+          <input
+            id="lastName"
+            name="lastName"
+            type="text"
+            value={formData.lastName}
+            onChange={handleChange}
+            placeholder={t('contact.form.placeholders.lastName')}
+            required
+            className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`}
+            disabled={isSubmitting}
+          />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="phone" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.phone')}</label>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder={t('contact.form.placeholders.phone')}
+            required
+            className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`}
+            disabled={isSubmitting}
+          />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="email" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.email')}</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder={t('contact.form.placeholders.email')}
+            required
+            className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`}
+            disabled={isSubmitting}
+          />
+        </div>
+        <div className="space-y-2 md:col-span-2">
+          <label htmlFor="message" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.message')}</label>
+          <textarea
+            id="message"
+            name="message"
+            rows={4}
+            value={formData.message}
+            onChange={handleChange}
+            placeholder={t('contact.form.placeholders.message')}
+            required
+            className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors resize-none placeholder:text-white/70 text-white`}
+            disabled={isSubmitting}
+          />
+        </div>
+        
+        {/* Messages d'état */}
+        <AnimatePresence>
+          {submitStatus === 'success' && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="md:col-span-2 flex items-center gap-2 text-green-300"
+            >
+              <CheckCircle className="w-5 h-5" />
+              <p className="text-sm">{t('contact.form.success')}</p>
+            </motion.div>
+          )}
+          {submitStatus === 'error' && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="md:col-span-2 flex items-center gap-2 text-red-300"
+            >
+              <AlertCircle className="w-5 h-5" />
+              <p className="text-sm">{errorMessage}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="md:col-span-2 mt-4 flex justify-center">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`px-10 py-4 rounded-full bg-white text-slate-900 font-bold flex items-center gap-2 hover:scale-105 transition-transform shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>{t('contact.form.submitting')}</span>
+              </>
+            ) : (
+              <>
+                <span>{t('contact.form.submit')}</span>
+                <Send className="w-4 h-4" />
+              </>
+            )}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 };
 
 const ContactSections = (s: StyleConfig, t: (key: string) => any) => [
@@ -783,53 +988,9 @@ const ContactSections = (s: StyleConfig, t: (key: string) => any) => [
       </div>
   </div>,
 
-  // SECTION 2: Formulaire
-  <div className="h-full flex flex-col justify-center max-w-4xl mx-auto w-full">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-10 text-center ${s.text}`}>{t('contact.form.heading')}</h3>
-      <form className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.firstName')}</label>
-             <input type="text" placeholder={t('contact.form.placeholders.firstName')} className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`} />
-          </div>
-          <div className="space-y-2">
-             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.lastName')}</label>
-             <input type="text" placeholder={t('contact.form.placeholders.lastName')} className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`} />
-          </div>
-          <div className="space-y-2">
-             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.phone')}</label>
-             <input type="tel" placeholder={t('contact.form.placeholders.phone')} className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`} />
-          </div>
-          <div className="space-y-2">
-             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.email')}</label>
-             <input type="email" placeholder={t('contact.form.placeholders.email')} className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors placeholder:text-white/70 text-white`} />
-          </div>
-          <div className="space-y-2 md:col-span-2">
-             <label className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.message')}</label>
-             <textarea rows={4} placeholder={t('contact.form.placeholders.message')} className={`w-full p-4 rounded-xl bg-white/20 border border-white/30 focus:border-white/80 outline-none transition-colors resize-none placeholder:text-white/70 text-white`} />
-          </div>
-          <div className="md:col-span-2 mt-4 flex justify-center">
-             <button type="button" className={`px-10 py-4 rounded-full bg-white text-slate-900 font-bold flex items-center gap-2 hover:scale-105 transition-transform shadow-lg`}>
-                <span>{t('contact.form.submit')}</span>
-                <Send className="w-4 h-4" />
-             </button>
-          </div>
-      </form>
-  </div>,
+  <ContactForm key="contact-form" styleConfig={s} t={t} />,
 
-  // SECTION 3: Chat / Alternative
-  <div className="h-full flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
-      <div className={`w-20 h-20 mb-8 rounded-full ${s.accentBg} flex items-center justify-center`}>
-         <MessageSquare className="w-10 h-10" />
-      </div>
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-6 ${s.text}`}>{t('contact.chat.heading')}</h3>
-      <p className={`text-lg md:text-xl font-light opacity-80 mb-10 max-w-xl`}>
-        {t('contact.chat.description')}
-      </p>
-      <button className={`px-8 py-4 rounded-full ${s.card} border-2 border-white/20 hover:bg-white/10 transition-colors flex items-center gap-3`}>
-         <span className="font-medium">{t('contact.chat.button')}</span>
-         <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-      </button>
-  </div>
+ 
 ];
 
 const GenericSections = (item: GridItem, s: StyleConfig, t: (key: string, tile?: string) => any) => [

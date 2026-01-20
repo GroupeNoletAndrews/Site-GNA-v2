@@ -157,31 +157,25 @@ const LandingPage: React.FC = () => {
       return;
     }
 
-    // --- CINEMATIC INTRO SEQUENCE ---
     if (isIntroMode) {
-      if (introStage !== "idle") return; // Prevent double trigger during animation
+      if (introStage !== "idle") return;
 
-      // STEP 1: Fade out Logo & Text on Hero Tile
       setIntroStage("logo-out");
 
-      // STEP 2: Fade In Grey/Blue Overlay (After Logo Fades)
-      // INCREASED TIMEOUT: To allow for the sequential fade out of Button -> Text -> Logo
       setTimeout(() => {
         setIntroStage("overlay-in");
       }, 1100);
 
-      // STEP 3: Switch Underlying Grid Layout & Start Reveal
       setTimeout(() => {
-        setIsIntroMode(false); // Snap grid to closed positions (hidden by overlay)
-        setIntroStage("reveal"); // Trigger overlay fade out
-      }, 3500); // Allow time for reading text
+        setIsIntroMode(false);
+        setIntroStage("reveal");
+      }, 3500);
 
-      // STEP 4: Finish
       setTimeout(() => {
         setIntroStage("finished");
         setIntroAnimationFinished(true);
         if (id !== "hero") setActiveId(id);
-      }, 4500); // +1000ms for overlay fade out
+      }, 4500);
 
       return;
     }
@@ -196,30 +190,22 @@ const LandingPage: React.FC = () => {
     }
   };
 
-  // REVISED: Cinematic Return to Intro
   const handleBackToIntro = () => {
-    // 1. Trigger Overlay Fade In
     setIntroStage("return-overlay-in");
 
-    // 2. Wait for Overlay to be mostly opaque
     setTimeout(() => {
       setActiveId(null);
       setIsIntroMode(true);
-      setIntroAnimationFinished(false); // Reset animation state for "Bienvenue"
+      setIntroAnimationFinished(false);
 
-      // 3. Trigger Reveal (Overlay Fades Out, showing Intro Layout)
       setIntroStage("return-reveal");
     }, 600);
 
-    // 4. Reset to Idle once reveal is done
     setTimeout(() => {
       setIntroStage("idle");
-    }, 1400); // 600 + 800ms
+    }, 1400);
   };
 
-  // Helper to determine if we are "Exiting" the intro (going to dashboard)
-  // This prevents the logo/text from reappearing during the transition out.
-  // We ONLY want this true during the initial 'logo-out' and 'overlay-in' phases of the entry sequence.
   const isIntroExiting =
     introStage === "logo-out" || (introStage === "overlay-in" && isIntroMode);
 
@@ -230,9 +216,6 @@ const LandingPage: React.FC = () => {
       transition={{ duration: 0.3, delay: 0.1 }}
       className="h-full w-full bg-[#E2E8F0] text-slate-900 selection:bg-indigo-500 selection:text-white relative overflow-hidden"
     >
-      {/* =========================================================================
-          MOBILE LAYOUT
-      ========================================================================= */}
       <div
         className="block md:hidden w-full h-[100dvh] overflow-hidden relative bg-white"
         onTouchStart={handleTouchStart}
@@ -306,7 +289,6 @@ const LandingPage: React.FC = () => {
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
                             <span className="text-xs xs:text-sm sm:text-base font-normal tracking-wide text-white uppercase drop-shadow-sm">{t('landing.mobile.servicesOfferts')}</span>
                         </div>
-                        {/* Mobile Menu Button REMOVED */}
                     </div>
                 </div>
 
@@ -431,18 +413,11 @@ const LandingPage: React.FC = () => {
             </div>
           </motion.div>
 
-        {/* Mobile Menu Overlay REMOVED */}
       </div>
 
-      {/* =========================================================================
-          DESKTOP LAYOUT
-      ========================================================================= */}
-
       {isPortrait ? (
-        // --- PORTRAIT DASHBOARD ---
         <div className="hidden md:flex flex-col w-full h-full overflow-hidden relative bg-[#E2E8F0]">
           {isIntroMode ? (
-            // --- PORTRAIT INTRO MODE (FULL SCREEN) ---
             <div className="w-full h-full relative z-20">
               {heroItem && (
                 <Tile
@@ -462,7 +437,6 @@ const LandingPage: React.FC = () => {
               )}
             </div>
           ) : (
-            // --- PORTRAIT DASHBOARD MODE (AFTER INTRO) ---
             <>
               {heroItem && (
                 <div className="w-full h-[13vh] min-h-[120px] relative z-20 shadow-xl flex-shrink-0">
@@ -537,7 +511,6 @@ const LandingPage: React.FC = () => {
             </>
           )}
 
-          {/* PORTRAIT TRANSITION OVERLAY (Cinematic Intro & Return) */}
           <AnimatePresence>
             {(introStage === "overlay-in" ||
               introStage === "reveal" ||
@@ -572,10 +545,8 @@ const LandingPage: React.FC = () => {
           </AnimatePresence>
         </div>
       ) : (
-        // --- LANDSCAPE STANDARD BENTO ---
         <div className="hidden md:block w-full h-screen relative overflow-hidden bg-[#E2E8F0]">
           <div className="w-full h-full relative overflow-hidden">
-            {/* LAYER 0 : CENTRAL PAGE */}
             <div className="absolute top-0 left-0 w-full h-full z-0">
               <CentralPage
                 activeId={activeId}
@@ -584,7 +555,6 @@ const LandingPage: React.FC = () => {
               />
             </div>
 
-            {/* LAYER 1 : GRID SYSTEM */}
             <div
               className={`absolute top-0 left-0 w-full h-full grid grid-cols-1 md:grid-cols-12 gap-0 pointer-events-none z-10 ${!isIntroMode ? "pb-20" : ""}`}
               style={{
@@ -600,7 +570,6 @@ const LandingPage: React.FC = () => {
                     isActive={activeId === item.id}
                     isAnyActive={activeId !== null}
                     isIntroMode={isIntroMode}
-                    // Intro Exiting is true only if we are LEAVING Intro (logo-out / overlay-in)
                     isIntroExiting={isIntroExiting}
                     introAnimationFinished={introAnimationFinished}
                     isPortrait={isPortrait}
@@ -614,7 +583,6 @@ const LandingPage: React.FC = () => {
               })}
             </div>
 
-            {/* LAYER 2 : TRANSITION OVERLAY (Cinematic Intro & Return) */}
             <AnimatePresence>
               {(introStage === "overlay-in" ||
                 introStage === "reveal" ||
@@ -628,7 +596,6 @@ const LandingPage: React.FC = () => {
                   transition={{ duration: 0.8, ease: "easeInOut" }}
                   className="absolute inset-0 z-[60] flex items-center justify-center bg-[#E1E6EC]/90 backdrop-blur-xl"
                 >
-                  {/* Only show "C'est parti" Text during the ENTRY sequence, not the RETURN sequence */}
                   {(introStage === "overlay-in" || introStage === "reveal") && (
                     <motion.div
                       className="max-w-4xl px-8 text-center"
@@ -649,7 +616,6 @@ const LandingPage: React.FC = () => {
               )}
             </AnimatePresence>
 
-            {/* FOOTER */}
             <div className="absolute bottom-0 left-0 w-full z-50">
               <AnimatePresence>
                 {!isIntroMode && (
@@ -668,7 +634,6 @@ const LandingPage: React.FC = () => {
         </div>
       )}
 
-      {/* Language Switcher - Flottant pour tous les layouts */}
       <LanguageSwitcher />
     </motion.div>
   );

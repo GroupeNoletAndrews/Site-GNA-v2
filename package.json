@@ -9,11 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "chokidar": "^5.0.0",
     "framer-motion": "^12.24.7",
     "i18n": "^0.15.3",
     "lucide-react": "^0.562.0",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "react-dom": "^19.2.3",
+    "resend": "^3.2.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
