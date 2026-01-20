@@ -8,9 +8,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
-dotenv.config({ path: path.resolve(__dirname, `../${envFile}`) });
+const envPath = path.resolve(__dirname, `../${envFile}`);
+const result = dotenv.config({ path: envPath });
 
-import { sendContactEmail } from '../../GNAwebsite/lib/email';
+// Fallback vers .env si .env.development n'existe pas
+if (result.error && process.env.NODE_ENV !== 'production') {
+  console.log(`⚠️ ${envFile} non trouvé, tentative avec .env...`);
+  dotenv.config({ path: path.resolve(__dirname, '../.env') });
+}
+
+import { sendContactEmail } from '../lib/email.ts';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -24,10 +31,12 @@ app.get('/api/health', (req: Request, res: Response) => {
 
 app.post('/api/contact', async (req: Request, res: Response) => {
   try {
+    console.log('Contact request received:', req.body);
     const { firstName, lastName, email, phone, message } = req.body;
 
     if (!firstName || !lastName || !email || !phone || !message) {
       return res.status(400).json({
+        success: false,
         error: 'Tous les champs sont requis',
         missing: {
           firstName: !firstName,
@@ -41,11 +50,17 @@ app.post('/api/contact', async (req: Request, res: Response) => {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: 'Email invalide' });
+      return res.status(400).json({ 
+        success: false,
+        error: 'Email invalide' 
+      });
     }
 
     if (phone.replace(/\D/g, '').length < 10) {
-      return res.status(400).json({ error: 'Numéro de téléphone invalide' });
+      return res.status(400).json({ 
+        success: false,
+        error: 'Numéro de téléphone invalide' 
+      });
     }
 
     const result = await sendContactEmail({
@@ -64,12 +79,14 @@ app.post('/api/contact', async (req: Request, res: Response) => {
     } else {
       console.error('Erreur Resend:', result.error);
       return res.status(500).json({
-        error: "Erreur lors de l'envoi de l'email",
+        success: false,
+        error: result.error ? (typeof result.error === 'string' ? result.error : JSON.stringify(result.error)) : "Erreur lors de l'envoi de l'email",
       });
     }
   } catch (error) {
     console.error('Erreur API:', error);
     return res.status(500).json({
+      success: false,
       error: 'Erreur serveur',
       details: error instanceof Error ? error.message : 'Erreur inconnue',
     });

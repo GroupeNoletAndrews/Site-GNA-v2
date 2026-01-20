@@ -5,6 +5,9 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 const API_URL = process.env.API_URL || 'http://localhost:3001';
+const API_KEY_RESEND = process.env.API_KEY_RESEND;
+console.log('API_KEY_RESEND', API_KEY_RESEND);
+console.log('API_URL', API_URL);
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
@@ -21,8 +24,9 @@ export default defineConfig(({ mode }) => {
       },
       plugins: [react()],
       define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+        'process.env.API_URL': JSON.stringify(API_URL),
+        'process.env.API_KEY_RESEND': JSON.stringify(env.API_KEY_RESEND),
+        'process.env.CONTACT_EMAIL': JSON.stringify(env.CONTACT_EMAIL)
       },
       resolve: {
         alias: {

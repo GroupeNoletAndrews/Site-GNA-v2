@@ -754,7 +754,6 @@ const ContactForm: React.FC<{ styleConfig: StyleConfig; t: (key: string) => any 
     phone: '',
     message: ''
   });
-  const apiUrl = import.meta.env.API_URL || 'http://localhost:3001';
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -790,7 +789,9 @@ const ContactForm: React.FC<{ styleConfig: StyleConfig; t: (key: string) => any 
 
     try {
       console.log('Form data:', formData);
-      const response = await fetch(`${apiUrl}/api/contact`, {
+      // En développement: le proxy Vite redirige /api/contact vers localhost:3001
+      // En production: Vercel route /api/contact vers la serverless function
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
