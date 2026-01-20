@@ -151,7 +151,7 @@ const CentralPage: React.FC<CentralPageProps> = ({ activeId, onClose, isPortrait
                 </div>
               </div>
 
-              <div className="flex-grow relative overflow-hidden">
+              <div className={`flex-grow relative overflow-hidden ${activeItem.textClass}`}>
                 <TileContent item={activeItem} />
               </div>
             </motion.div>
