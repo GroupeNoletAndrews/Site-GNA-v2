@@ -394,7 +394,7 @@ const LandingPage: React.FC = () => {
                                     
                                     <AnimatePresence initial={false}>
                                         {isContactExpanded && !shouldShrink && (
-                                            <motion.div key="contact-content" initial={{ height: 0, opacity: 0 }} animate={{ height: "60vh", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.75, ease: [0.04, 0.62, 0.23, 0.98] }} className="overflow-y-auto bg-white border-t border-slate-200 order-last">
+                                            <motion.div key="contact-content" initial={{ height: 0, opacity: 0 }} animate={{ height: "60vh", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.75, ease: [0.04, 0.62, 0.23, 0.98] }} className={`overflow-y-auto ${contactItem.bgClass} ${contactItem.textClass} border-t border-white/20 order-last`}>
                                                 <div className="w-full"><TileContent item={contactItem} isMobile={true} /></div>
                                             </motion.div>
                                         )}

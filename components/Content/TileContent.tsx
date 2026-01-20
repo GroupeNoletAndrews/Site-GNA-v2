@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { AlertCircle, ArrowRight, CheckCircle, ChevronDown, Loader2, Mail, Phone, Send } from 'lucide-react';
+import { AlertCircle, CheckCircle, ChevronDown, Loader2, Mail, Phone, Send } from 'lucide-react';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useI18n } from '../../contexts/I18nContext';
 import { GridItem } from '../../types';
@@ -839,7 +839,7 @@ const ContactForm: React.FC<{ styleConfig: StyleConfig; t: (key: string) => any 
       <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-10 text-center ${s.text}`}>{t('contact.form.heading')}</h3>
       <form onSubmit={handleSubmit} className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <label htmlFor="firstName" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.firstName')}</label>
+          <label htmlFor="firstName" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold text-white`}>{t('contact.form.fields.firstName')}</label>
           <input
             id="firstName"
             name="firstName"
@@ -853,7 +853,7 @@ const ContactForm: React.FC<{ styleConfig: StyleConfig; t: (key: string) => any 
           />
         </div>
         <div className="space-y-2">
-          <label htmlFor="lastName" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.lastName')}</label>
+          <label htmlFor="lastName" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold text-white`}>{t('contact.form.fields.lastName')}</label>
           <input
             id="lastName"
             name="lastName"
@@ -867,7 +867,7 @@ const ContactForm: React.FC<{ styleConfig: StyleConfig; t: (key: string) => any 
           />
         </div>
         <div className="space-y-2">
-          <label htmlFor="phone" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.phone')}</label>
+          <label htmlFor="phone" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold text-white`}>{t('contact.form.fields.phone')}</label>
           <input
             id="phone"
             name="phone"
@@ -881,7 +881,7 @@ const ContactForm: React.FC<{ styleConfig: StyleConfig; t: (key: string) => any 
           />
         </div>
         <div className="space-y-2">
-          <label htmlFor="email" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.email')}</label>
+          <label htmlFor="email" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold text-white`}>{t('contact.form.fields.email')}</label>
           <input
             id="email"
             name="email"
@@ -895,7 +895,7 @@ const ContactForm: React.FC<{ styleConfig: StyleConfig; t: (key: string) => any 
           />
         </div>
         <div className="space-y-2 md:col-span-2">
-          <label htmlFor="message" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold`}>{t('contact.form.fields.message')}</label>
+          <label htmlFor="message" className={`text-xs uppercase tracking-widest opacity-90 ml-1 font-semibold text-white`}>{t('contact.form.fields.message')}</label>
           <textarea
             id="message"
             name="message"
