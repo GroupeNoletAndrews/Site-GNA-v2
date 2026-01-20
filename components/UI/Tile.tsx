@@ -947,6 +947,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                           )}
                         </motion.div>
                       ) : (
+                        windowHeight >= 650 && (
                         <>
                           <motion.h3
                             key="title"
@@ -959,7 +960,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                           >
                             {translatedItem.title}
                           </motion.h3>
-                        </>
+                        </>)
                       )}
                     </AnimatePresence>
                   )}
