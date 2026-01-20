@@ -655,8 +655,8 @@ const TeamSections = (s: StyleConfig, t: (key: string) => any) => {
       name: member.name,
       role: member.role,
       img: idx === 0 
-        ? "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop"
-        : "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop"
+        ? "/images/e-n.jpg"
+        : "/images/p-a.jpg"
     }));
     
     const expertsData = t('team.experts.members') as any[] || [];
@@ -664,9 +664,9 @@ const TeamSections = (s: StyleConfig, t: (key: string) => any) => {
         name: member.name,
         role: member.role,
         img: idx === 0
-          ? "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop"
+          ? "/images/j-c-a.jpg"
           : idx === 1
-          ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop"
+          ? "/images/e-a.jpg"
           : "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop"
     }));
 
@@ -724,24 +724,24 @@ const TeamSections = (s: StyleConfig, t: (key: string) => any) => {
         </div>
     </div>,
 
-    <div className="h-full flex flex-col justify-center max-w-6xl 2xl:max-w-7xl">
-        <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('team.portfolio.heading')}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 xl:gap-8">
-             {portfolio.map((project, idx) => (
-             <div key={idx} className={`group relative rounded-2xl overflow-hidden aspect-video ${s.card} cursor-pointer`}>
-                 <img src={idx === 0 ? "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2000&auto=format&fit=crop" : "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop"} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500 grayscale group-hover:grayscale-0" />
-                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                 <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                     <p className="text-xs uppercase tracking-widest text-white/70 mb-2">{project.category}</p>
-                     <h4 className="text-xl md:text-2xl text-white font-normal flex items-center gap-3">
-                         {project.title}
-                         <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
-                     </h4>
-                 </div>
-             </div>
-             ))}
-        </div>
-    </div>
+    // <div className="h-full flex flex-col justify-center max-w-6xl 2xl:max-w-7xl">
+    //     <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-8 md:mb-12 ${s.text}`}>{t('team.portfolio.heading')}</h3>
+    //     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 xl:gap-8">
+    //          {portfolio.map((project, idx) => (
+    //          <div key={idx} className={`group relative rounded-2xl overflow-hidden aspect-video ${s.card} cursor-pointer`}>
+    //              <img src={idx === 0 ? "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2000&auto=format&fit=crop" : "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop"} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500 grayscale group-hover:grayscale-0" />
+    //              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+    //              <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+    //                  <p className="text-xs uppercase tracking-widest text-white/70 mb-2">{project.category}</p>
+    //                  <h4 className="text-xl md:text-2xl text-white font-normal flex items-center gap-3">
+    //                      {project.title}
+    //                      <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
+    //                  </h4>
+    //              </div>
+    //          </div>
+    //          ))}
+    //     </div>
+    // </div>
     ];
 };
 
@@ -996,36 +996,36 @@ const ContactSections = (s: StyleConfig, t: (key: string) => any) => [
 
 const GenericSections = (item: GridItem, s: StyleConfig, t: (key: string, tile?: string) => any) => [
   <div className="h-full flex flex-col justify-center max-w-3xl 2xl:max-w-5xl">
-    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl font-light mb-4 md:mb-6 ${s.text}`}>Introduction</h3>
+    <h3 className={`text-2xl md:text-3xl lg:text-5xl xl:text-6xl font-light mb-4 md:mb-6 ${s.text}`}>{t('common.generic.intro.heading')}</h3>
     <p className={`text-base md:text-xl lg:text-2xl xl:text-3xl font-light leading-relaxed mb-6 md:mb-8 ${s.subtext}`}>
       {item.description}
       <br/><br/>
-      Découvrez l'approche unique de Groupe Nolet & Andrews pour <span className="font-normal opacity-100">{item.title}</span>.
+      {t('common.generic.intro.description')} <span className="font-normal opacity-100">{item.title}</span>.
     </p>
     <div className={`h-1 w-20 mt-2 md:mt-4 bg-current opacity-80`} />
   </div>,
 
   <div className="h-full flex flex-col justify-center max-w-4xl 2xl:max-w-6xl">
-      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-6 md:mb-10 ${s.text}`}>Points Clés</h3>
+      <h3 className={`text-xl md:text-2xl lg:text-4xl xl:text-5xl font-normal mb-6 md:mb-10 ${s.text}`}>{t('common.generic.section2.heading')}</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 xl:gap-12">
         <div className={`p-6 md:p-8 xl:p-12 rounded-2xl ${s.card}`}>
-           <h4 className={`text-lg md:text-xl xl:text-2xl font-normal mb-2 md:mb-4 ${s.text}`}>Expertise</h4>
-           <p className={`text-sm md:text-base xl:text-lg font-light ${s.subtext}`}>Une approche basée sur des années d'expérience et une méthodologie éprouvée.</p>
+           <h4 className={`text-lg md:text-xl xl:text-2xl font-normal mb-2 md:mb-4 ${s.text}`}>{t('common.generic.section2.expertise.title')}</h4>
+           <p className={`text-sm md:text-base xl:text-lg font-light ${s.subtext}`}>{t('common.generic.section2.expertise.description')}</p>
         </div>
         <div className={`p-6 md:p-8 xl:p-12 rounded-2xl ${s.card}`}>
-           <h4 className={`text-lg md:text-xl xl:text-2xl font-normal mb-2 md:mb-4 ${s.text}`}>Innovation</h4>
-           <p className={`text-sm md:text-base xl:text-lg font-light ${s.subtext}`}>Utilisation des dernières technologies pour garantir un avantage compétitif.</p>
+           <h4 className={`text-lg md:text-xl xl:text-2xl font-normal mb-2 md:mb-4 ${s.text}`}>{t('common.generic.section2.innovation.title')}</h4>
+           <p className={`text-sm md:text-base xl:text-lg font-light ${s.subtext}`}>{t('common.generic.section2.innovation.description')}</p>
         </div>
       </div>
   </div>,
   
   <div className="h-full flex flex-col justify-center items-center text-center max-w-2xl 2xl:max-w-4xl mx-auto">
-      <h3 className={`text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-normal mb-4 md:mb-6 ${s.text}`}>Prêt à avancer ?</h3>
+      <h3 className={`text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-normal mb-4 md:mb-6 ${s.text}`}>{t('common.generic.section3.heading')}</h3>
       <p className={`text-base md:text-lg xl:text-xl 2xl:text-2xl mb-6 md:mb-8 font-light ${s.subtext}`}>
-          Contactez notre équipe pour discuter de la manière dont {item.title} peut transformer votre entreprise.
+          {t('common.generic.section3.description')} {item.title} {t('common.generic.section3.descriptionEnd')}
       </p>
       <button className={`px-6 py-3 md:px-8 md:py-4 xl:px-10 xl:py-5 rounded-full font-normal shadow-lg text-sm md:text-base xl:text-lg transition-transform hover:scale-105 ${s.button}`}>
-          En savoir plus
+          {t('common.generic.section3.button')}
       </button>
   </div>
 ];

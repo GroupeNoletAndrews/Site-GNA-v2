@@ -13,7 +13,6 @@ const result = dotenv.config({ path: envPath });
 
 // Fallback vers .env si .env.development n'existe pas
 if (result.error && process.env.NODE_ENV !== 'production') {
-  console.log(`⚠️ ${envFile} non trouvé, tentative avec .env...`);
   dotenv.config({ path: path.resolve(__dirname, '../.env') });
 }
 
@@ -31,7 +30,6 @@ app.get('/api/health', (req: Request, res: Response) => {
 
 app.post('/api/contact', async (req: Request, res: Response) => {
   try {
-    console.log('Contact request received:', req.body);
     const { firstName, lastName, email, phone, message } = req.body;
 
     if (!firstName || !lastName || !email || !phone || !message) {

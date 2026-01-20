@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { GridItem } from '../../types';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowLeft, ArrowRight, ArrowUpRight, MousePointerClick, RotateCcw } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { GRID_ITEMS } from '../../constants';
 import { useI18n } from '../../contexts/I18nContext';
-import { ArrowUpRight, Menu as MenuIcon, ArrowRight, ArrowLeft, MousePointerClick, LayoutGrid, RotateCcw } from 'lucide-react';
+import { GridItem } from '../../types';
 
 interface TileProps {
   item: GridItem;
@@ -638,9 +638,9 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                           e.stopPropagation();
                           onBackToIntro();
                         }}
-                        className="flex items-center gap-2 text-white/80 hover:text-white transition-colors bg-black/20 hover:bg-black/30 px-4 py-2 rounded-full backdrop-blur-sm"
+                        className="flex items-center gap-0 wide:gap-2 text-white/80 hover:text-white transition-colors bg-black/20 hover:bg-black/30 px-2 wide:px-4 py-2 rounded-full backdrop-blur-sm"
                       >
-                        <span className="text-xs uppercase tracking-widest">
+                        <span className="text-xs uppercase tracking-widest hidden wide:inline">
                           {t('common.accueil')}
                         </span>
                         <RotateCcw className="w-4 h-4" />
@@ -822,9 +822,9 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                           e.stopPropagation();
                           onBackToIntro();
                         }}
-                        className="flex items-center gap-2 text-white/80 hover:text-white transition-colors bg-white/10 hover:bg-white/20 border border-white/10 px-6 py-2 rounded-full backdrop-blur-md shadow-lg pointer-events-auto"
+                        className="flex items-center gap-0 wide:gap-2 text-white/80 hover:text-white transition-colors bg-white/10 hover:bg-white/20 border border-white/10 px-2 wide:px-6 py-2 rounded-full backdrop-blur-md shadow-lg pointer-events-auto"
                       >
-                        <span className="text-xs uppercase tracking-widest font-medium">
+                        <span className="text-xs uppercase tracking-widest font-medium hidden wide:inline">
                           Accueil
                         </span>
                         <RotateCcw className="w-3.5 h-3.5" />
@@ -860,9 +860,9 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                               e.stopPropagation();
                               onBackToIntro();
                             }}
-                            className="pointer-events-auto flex items-center gap-2 text-white/80 hover:text-white transition-colors bg-black/20 hover:bg-black/30 border border-white/5 px-6 py-2 rounded-full backdrop-blur-sm shadow-lg self-center"
+                            className="pointer-events-auto flex items-center gap-0 wide:gap-2 text-white/80 hover:text-white transition-colors bg-black/20 hover:bg-black/30 border border-white/5 px-2 wide:px-6 py-2 rounded-full backdrop-blur-sm shadow-lg self-center"
                           >
-                            <span className="text-xs uppercase tracking-widest font-medium">
+                            <span className="text-xs uppercase tracking-widest font-medium hidden wide:inline">
                               Accueil
                             </span>
                             <RotateCcw className="w-3.5 h-3.5" />
@@ -957,7 +957,7 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                             // ADDED: whitespace-normal break-words leading-[0.9rem] for text wrapping
                             className={`hidden md:block font-medium uppercase tracking-wider leading-[0.9rem] whitespace-normal break-words w-full px-1 mt-2 opacity-80 text-[10px] relative z-20`}
                           >
-                            {item.title}
+                            {translatedItem.title}
                           </motion.h3>
                         </>
                       )}
@@ -1003,11 +1003,11 @@ const Tile: React.FC<TileProps> = ({ item, isActive, isAnyActive, isIntroMode = 
                     </div>
                     <div className="flex flex-col gap-0.5">
                       <h3 className="font-normal text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl leading-tight tracking-tight">
-                        {item.title}
+                        {translatedItem.title}
                       </h3>
-                      {item.subtitle && (
+                      {translatedItem.subtitle && (
                         <p className="text-[9px] md:text-[10px] lg:text-xs xl:text-sm font-normal tracking-wide opacity-70">
-                          {item.subtitle}
+                          {translatedItem.subtitle}
                         </p>
                       )}
                     </div>

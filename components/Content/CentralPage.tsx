@@ -1,9 +1,9 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { GRID_ITEMS } from '../../constants';
-import TileContent from './TileContent';
+import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import React from 'react';
+import { GRID_ITEMS } from '../../constants';
 import { useI18n } from '../../contexts/I18nContext';
+import TileContent from './TileContent';
 
 interface CentralPageProps {
   activeId: string | null;
@@ -138,7 +138,7 @@ const CentralPage: React.FC<CentralPageProps> = ({ activeId, onClose, isPortrait
                   </motion.div>
                   
                   <div>
-                    <motion.h2 layoutId={`title-${activeItem.id}`} className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-normal mb-1 tracking-tight truncate">
+                    <motion.h2 layoutId={`title-${activeItem.id}`} className="text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-normal  tracking-tight truncate">
                       {translatedItem.title}
                     </motion.h2>
                     
@@ -151,7 +151,6 @@ const CentralPage: React.FC<CentralPageProps> = ({ activeId, onClose, isPortrait
                 </div>
               </div>
 
-              {/* Corps du contenu - Transparent pour laisser voir le bgClass du parent */}
               <div className="flex-grow relative overflow-hidden">
                 <TileContent item={activeItem} />
               </div>

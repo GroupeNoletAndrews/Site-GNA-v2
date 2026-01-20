@@ -8,7 +8,7 @@ function startServer() {
     serverProcess.kill();
   }
 
-  console.log('🔄 Démarrage du serveur...');
+  console.log(' Démarrage du serveur...');
 
   serverProcess = spawn('tsx', ['server/index.ts'], {
     stdio: 'inherit',
@@ -16,7 +16,7 @@ function startServer() {
   });
 
   serverProcess.on('error', (error: Error) => {
-    console.error('❌ Erreur serveur:', error);
+    console.error(' Erreur serveur:', error);
   });
 }
 
@@ -28,7 +28,7 @@ const watcher = chokidar.watch(['server/**/*.ts', 'lib/email.ts'], {
 });
 
 watcher.on('change', path => {
-  console.log(`\n📝 Fichier modifié: ${path}`);
+  console.log(`\n Fichier modifié: ${path}`);
   startServer();
 });
 
